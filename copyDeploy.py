@@ -16,6 +16,14 @@ def can_symlink(testFolder):
         can = True
     return can
 
+
+def myCopy(source, destination, canLink):
+    if canLink:
+        shutil.copy2(source, destination)
+    else:
+        shutil.copyfile(source, destination)
+
+
 def copyrecursively(source_folder, destination_folder):
     canLink = can_symlink(destination_folder)
     for root, dirs, files in os.walk(source_folder):
@@ -25,7 +33,7 @@ def copyrecursively(source_folder, destination_folder):
             if os.path.exists(dst_path):
                 if os.stat(src_path).st_mtime > os.stat(dst_path).st_mtime:
                     print ("Overwrite file: %s to %s" % (src_path, dst_path))
-                    shutil.copy2(src_path, dst_path)
+                    myCopy(src_path, dst_path, canLink)
                 else:
                     print ("Target file already exists and is not older than source file %s - %s" % (src_path, dst_path))
             else:
@@ -34,7 +42,7 @@ def copyrecursively(source_folder, destination_folder):
                     linkto = os.readlink(src_path)
                     os.symlink(linkto, dst_path)
                 else:
-                    shutil.copy2(src_path, dst_path)
+                    myCopy(src_path, dst_path, canLink)
         for item in dirs:
             src_path = os.path.join(root, item)
             dst_path = os.path.join(destination_folder, src_path.replace(source_folder, ""))
@@ -43,12 +51,9 @@ def copyrecursively(source_folder, destination_folder):
 
 
 
-targetPath = ""
-sourcePath = ""
-if len(sys.argv) > 1:
-   sourcePath = sys.argv[1]
-if len(sys.argv) > 2:
-   targetPath = sys.argv[2]
+targetPath = '/imageStorage'
+sourcePath = os.environ['SOURCE_PATH']
+jobName = os.environ['PARENT_JOB']
 
 now = datetime.datetime.now()
 
@@ -57,13 +62,16 @@ if len(targetPath) <= 0:
 elif not (targetPath.endswith("/")):
     targetPath += "/"
 
-targetPath += now.strftime("%Y%m%d") + "/"
+targetPath += jobName + now.strftime("/%Y%m%d") + "/"
 
 if not os.path.exists(sourcePath):
     print "Source path doesn't exitst"
+    exit(-1)
 
 if not os.path.exists(targetPath):
     print "Create target folder: " + targetPath
     os.makedirs(targetPath)
 
+print targetPath
+print jobName
 copyrecursively(sourcePath, targetPath)
