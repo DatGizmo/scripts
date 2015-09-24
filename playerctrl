@@ -1,0 +1,161 @@
+#!/usr/bin/python
+
+import sys
+import getopt
+import psutil
+import dbus
+from subprocess import call
+
+SPOTIFY = 'org.mpris.MediaPlayer2.spotify'
+SPOT_PATH = '/'
+SPOT_VLC_IFACE = 'org.freedesktop.MediaPlayer2'
+
+class Player:
+    Spotify = 'spotify'
+    CMUS = 'cmus'
+    NONE = -1
+
+class Tasks:
+    Play = 1
+    Stop = 2
+    Next = 3
+    Prev = 4
+    Toggle = 5
+    Pause = 6
+    MetaData = 7
+    NONE = -1
+
+target = Player.NONE
+task = Tasks.NONE
+
+def printhelp():
+    print('playerctrl.py -a <action> [-p <player>]')
+
+def parscmd(argv):
+    global task, target
+    try:
+        opts, args = getopt.getopt(argv, "htsnmpa:p:", ["help", "action=", "player="])
+    except getopt.GetoptError:
+        printhelp()
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h' :
+            printhelp()
+            sys.exit()
+        elif opt == '-t':
+            task = Tasks.Toggle
+        elif opt == '-s':
+            task = Tasks.Stop
+        elif opt == '-n':
+            task = Tasks.Next
+        elif opt == '-p':
+            task = Tasks.Prev
+        elif opt == '-m':
+            task = Tasks.MetaData
+        elif opt in ("-a", "--action"):
+            if(arg == 'play'):
+                task = Tasks.Play
+            elif(arg == 'stop'):
+                task = Tasks.Stop
+            elif(arg == 'next'):
+                task = Tasks.Next
+            elif(arg == 'previous'):
+                task = Tasks.Prev
+            elif(arg == 'toggle'):
+                task = Tasks.Toggle
+            else:
+                print("Unkown task")
+                printhelp()
+        elif opt in ("-p", "--player"):
+            if(arg == 'spotify'):
+                target = Player.Spotify
+            elif(arg == 'cmus'):
+                target = Player.CMUS
+            else:
+                print("Unkown player")
+                printhelp()
+                sys.exit(1)
+        else:
+            print("Unkown option %s"% opt);
+            printhelp()
+            sys.exit(1)
+
+def getPid(player):
+    for p in psutil.process_iter():
+        if str(player) in str(p.name):
+            return True
+    return False
+    
+def getRunningPlayer():
+    if(getPid(Player.Spotify)):
+        return Player.Spotify
+    elif(getPid(Player.CMUS)):
+        return Player.CMUS
+
+def sendDbus(player, action):
+    dest=''
+    path=''
+    iface_name=''
+
+    if(player == Player.Spotify):
+        dest=SPOTIFY
+        path=SPOT_PATH
+        iface_name=SPOT_VLC_IFACE
+    else:
+        print('No supporte player!')
+        sys.exit(2)
+
+    bus = dbus.SessionBus()
+    obj = bus.get_object(dest, path)
+    iface = dbus.Interface(obj, dbus_interface=iface_name)
+   
+    if(action == Tasks.Play):
+        iface.Play()
+    elif(action == Tasks.Pause):
+        iface.Pause()
+    elif(action == Tasks.Stop):
+        iface.Stop()
+    elif(action == Tasks.Next):
+        iface.Next()
+    elif(action == Tasks.Prev):
+        iface.Previous()
+    elif(action == Tasks.Toggle):
+        iface.PlayPause()
+    elif(action == Tasks.MetaData):
+        print(dir(iface))
+        print((iface.GetMetadata().values[0]))
+        
+def sendCmus(action):
+    
+    cmd = "cmus-remote"
+    cmdval = ""
+  
+    if(action == Tasks.Play):
+        cmdval = "-p"
+    elif(action == Tasks.Pause):
+        cmdval = "-u"
+    elif(action == Tasks.Stop):
+        cmdval = "-s"
+    elif(action == Tasks.Next):
+        cmdval = "-n"
+    elif(action == Tasks.Prev):
+        cmdval = "-r"
+    elif(action == Tasks.Toggle):
+        cmdval = "-u"
+    elif(action == Tasks.MetaData):
+        cmdval = "-Q" 
+
+    call([cmd, cmdval])
+
+def main(argv):
+    global task, target
+    parscmd(argv)
+    if(target == Player.NONE):
+        target = getRunningPlayer()
+    if(target != Player.CMUS):
+        sendDbus(target, task)
+    else:
+        sendCmus(task)
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
