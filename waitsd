@@ -1,0 +1,11 @@
+#!/bin/bash
+
+DEVICE="$(inotifywait -t 10 -e create -q /dev | sed -e 's/^.*CREATE //')"
+result=$?
+SUBROOTDEV="$(echo /dev/sde1 | sed -e 's/\/dev\///')"
+echo $DEVICE
+echo $SUBROOTDEV
+if [ "$DEVICE" != "$SUBROOTDEV" ]; then
+	echo "Blub"
+fi
+echo $result
