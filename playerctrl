@@ -4,11 +4,14 @@ import sys
 import getopt
 import psutil
 import dbus
+import pympris
+from see import see
 from subprocess import call
+from subprocess import check_output
 
 SPOTIFY = 'org.mpris.MediaPlayer2.spotify'
-SPOT_PATH = '/'
-SPOT_VLC_IFACE = 'org.freedesktop.MediaPlayer2'
+SPOT_PATH = '/org/mpris/MediaPlayer2'
+SPOT_VLC_IFACE = 'org.mpris.MediaPlayer2.Player'
 
 class Player:
     Spotify = 'spotify'
@@ -29,12 +32,12 @@ target = Player.NONE
 task = Tasks.NONE
 
 def printhelp():
-    print('playerctrl.py -a <action> [-p <player>]')
+    print('playerctrl.py -a <action> [--player <player>]')
 
 def parscmd(argv):
     global task, target
     try:
-        opts, args = getopt.getopt(argv, "htsnmpa:p:", ["help", "action=", "player="])
+        opts, args = getopt.getopt(argv, "htsnmpa:", ["help", "action=", "player="])
     except getopt.GetoptError:
         printhelp()
         sys.exit(2)
@@ -52,6 +55,8 @@ def parscmd(argv):
             task = Tasks.Prev
         elif opt == '-m':
             task = Tasks.MetaData
+        elif opt == '-P':
+            task = Tasks.Play
         elif opt in ("-a", "--action"):
             if(arg == 'play'):
                 task = Tasks.Play
@@ -66,7 +71,7 @@ def parscmd(argv):
             else:
                 print("Unkown task")
                 printhelp()
-        elif opt in ("-p", "--player"):
+        elif opt in ("--player"):
             if(arg == 'spotify'):
                 target = Player.Spotify
             elif(arg == 'cmus'):
@@ -91,6 +96,8 @@ def getRunningPlayer():
         return Player.Spotify
     elif(getPid(Player.CMUS)):
         return Player.CMUS
+    else:
+        return Player.NONE
 
 def sendDbus(player, action):
     dest=''
@@ -122,8 +129,13 @@ def sendDbus(player, action):
     elif(action == Tasks.Toggle):
         iface.PlayPause()
     elif(action == Tasks.MetaData):
-        print(dir(iface))
-        print((iface.GetMetadata().values[0]))
+        players_ids = list(pympris.available_players())
+        mp = pympris.MediaPlayer(players_ids[0], bus)
+        status = mp.player.PlaybackStatus
+        if 'play' in status.lower():
+            print(mp.player.Metadata['xesam:artist'][0] + ' - ' + mp.player.Metadata['xesam:title'])
+        else:
+            print("Pause/Stopped")
         
 def sendCmus(action):
     
@@ -144,6 +156,34 @@ def sendCmus(action):
         cmdval = "-u"
     elif(action == Tasks.MetaData):
         cmdval = "-Q" 
+        metaData = check_output([cmd, cmdval])
+        submetaData = []
+        string = ""
+        for item in metaData:
+            if item == '\n':
+                submetaData.append(string)
+                string = ""
+                continue
+            else:
+                string += item
+        
+        artist = ""
+        title = ""
+        for item in submetaData:
+            if 'status' in item.lower():
+                if not 'play' in item.lower():
+                    print("Pause/Stopped")
+                    break
+            elif 'title' in item.lower():
+                start = item.find('title') + 6
+                title = item [start:len(item)] 
+            elif 'artist' in item.lower():
+                start = item.find('artist') + 7
+                artist = item [start:len(item)]
+
+        if artist:
+            print(artist + ' - ' + title)
+        return
 
     call([cmd, cmdval])
 
@@ -152,7 +192,10 @@ def main(argv):
     parscmd(argv)
     if(target == Player.NONE):
         target = getRunningPlayer()
-    if(target != Player.CMUS):
+
+    if(target == Player.NONE):
+        print("No player running")    
+    elif(target != Player.CMUS):
         sendDbus(target, task)
     else:
         sendCmus(task)
