@@ -1,2 +1,3 @@
 #!/bin/bash
 grep -Pzo -e 'Package: (.*?)\n(.*?\n){0,10}Installed-Time:.*?\n(^(?!Auto-Installed: yes))' opkgStatus  | grep Package | sort
+awk BEGIN {RS="\n\n"} ; $0 !~ /Auto-Installed/ { print "*", $2 } opkgStatus
