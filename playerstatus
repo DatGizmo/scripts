@@ -16,7 +16,8 @@ def getMetaData():
 
 def writeToFile(string):
     fp = open("/home/swe/tmp/watch", "w")
-    fp.write(string)
+    unic = string.encode("UTF-8", "strict")
+    fp.write(unic)
     fp.close()
 
 def handle_properties_changes(changed_props, invalidated_props):
