@@ -1,0 +1,7 @@
+#!/bin/bash
+
+search=$1
+path=$2
+[ -z $path ] && path="."
+echo Search for $search in $path
+exec find $path -iname "*$search*"

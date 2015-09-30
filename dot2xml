@@ -1,0 +1,5 @@
+#!/bin/bash
+filename=$1
+name=$(ff=${filename%.dot}; echo ${ff##*/})
+python /development/git/extern/bitbucket/dottoxml/src/dottoxml.py $name.dot $name.graphml
+
