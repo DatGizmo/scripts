@@ -1,0 +1,86 @@
+#!/bin/bash
+
+CLEME="clementine"
+SPOT="spotify"
+VLC="vlc"
+cmd=''
+CLEME_T="dbus-send --session --dest=org.mpris.clementine --type=method_call /Player org.freedesktop.MediaPlayer.Pause"
+CLEME_S="dbus-send --session --dest=org.mpris.clementine --type=method_call /Player org.freedesktop.MediaPlayer.Stop"
+CLEME_N="dbus-send --session --dest=org.mpris.clementine --type=method_call /Player org.freedesktop.MediaPlayer.Next"
+CLEME_P="dbus-send --session --dest=org.mpris.clementine --type=method_call /Player org.freedesktop.MediaPlayer.Prev"
+SPOT_T="dbus-send --session --dest=org.mpris.MediaPlayer2.spotify --type=method_call / org.freedesktop.MediaPlayer2.PlayPause"
+SPOT_N="dbus-send --session --dest=org.mpris.MediaPlayer2.spotify --type=method_call / org.freedesktop.MediaPlayer2.Next"
+SPOT_P="dbus-send --session --dest=org.mpris.MediaPlayer2.spotify --type=method_call / org.freedesktop.MediaPlayer2.Previous"
+SPOT_S="dbus-send --session --dest=org.mpris.MediaPlayer2.spotify --type=method_call / org.freedesktop.MediaPlayer2.Play"
+VLC_T="dbus-send --session --dest=org.mpris.MediaPlayer2.vlc --type=method_call /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+VLC_S="dbus-send --session --dest=org.mpris.MediaPlayer2.vlc --type=method_call /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop"
+VLC_N="dbus-send --session --dest=org.mpris.MediaPlayer2.vlc --type=method_call /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+VLC_P="dbus-send --session --dest=org.mpris.MediaPlayer2.vlc --type=method_call /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+cmd_typs=-1
+
+while getopts "pnts" OPT; do
+	case $OPT in
+		t)
+			cmd_type=0
+		;;
+		n)
+			cmd_type=1
+		;;
+		p)
+			cmd_type=2
+		;;
+		s)
+			cmd_type=3
+		;;
+	esac
+done
+
+if [ "$(pidof $SPOT)" ]; then
+	case $cmd_type in
+		0)
+			cmd=$SPOT_T
+		;;
+		1)
+			cmd=$SPOT_N
+		;;
+		2)
+			cmd=$SPOT_P
+		;;
+		3)
+			cmd=$SPOT_S
+		;;
+	esac
+elif [ "$(pidof $CLEME)" ]; then
+	case $cmd_type in
+		0)
+			cmd=$CLEME_T
+		;;
+		1)
+			cmd=$CLEME_N
+		;;
+		2)
+			cmd=$CLEME_P
+		;;
+		3)
+			cmd=$CLEME_S
+		;;
+	esac
+elif [ "$(pidof $VLC)" ]; then
+	case $cmd_type in
+		0)
+			cmd=$VLC_T
+		;;
+		1)
+			cmd=$VLC_N
+		;;
+		2)
+			cmd=$VLC_P
+		;;
+		3)
+			cmd=$VLC_S
+		;;
+	esac
+fi
+
+echo $cmd
+exec $cmd

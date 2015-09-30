@@ -1,0 +1,35 @@
+#!/bin/bash
+
+SPOT="spotify"
+CMUS="cmus"
+SPOT_CMD='dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Metadata'
+SPOT_PPS='dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:PlaybackStatus'
+CMUS_CMD='cmus-remote -Q'
+cmd=''
+stat=''
+
+if [ "$(pidof $SPOT)" ]; then
+	cmd=$SPOT_PPS
+	stat=$($cmd | grep variant | sed -e 's/^.*string "//' | sed -e 's/"//')
+	cmd=$SPOT_CMD
+elif [ "$(pidof $CMUS)" ]; then
+	cmd=$CMUS_CMD
+	stat=$($cmd | grep status | sed -e 's/^.*status //')	
+fi
+
+if [ ! -z $stat ]; then
+	if [ $stat == 'Playing' -o $stat == 'playing' ]; then
+		if [ "$(pidof $SPOT)" ]; then
+			exec $cmd | grep title -A1 | grep variant | sed -e 's/^.*string "//' | sed -e 's/"//' > ~/tmp/watch
+			exec $cmd | grep artist -A2 | grep variant -A1 | grep string | sed -e 's/^.*string "//' | sed -e 's/"//' >> ~/tmp/watch
+		else
+			exec $cmd | grep title | sed -e "s/^.*title //" > ~/tmp/watch
+			exec $cmd | grep artist | sed -e "s/^.*artist //" >> ~/tmp/watch
+		fi
+	else
+		echo 'Pause/Stopped' > ~/tmp/watch
+	fi
+else
+	echo 'Pause/Stopped' > ~/tmp/watch
+fi
+
