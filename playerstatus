@@ -12,7 +12,7 @@ from gi.repository import GObject
 from dbus.mainloop.glib import DBusGMainLoop
 
 def getMetaData():
-    return (mp.player.Metadata['xesam:artist'][0] + ' - ' + mp.player.Metadata['xesam:title'])
+    return (mp.player.Metadata['xesam:artist'][0] + ' - '  + mp.player.Metadata['xesam:album'] + ' - ' + str(mp.player.Metadata['xesam:trackNumber']) + '.' + mp.player.Metadata['xesam:title'])
 
 def writeToFile(string):
     fp = open("/home/swe/tmp/watch", "w")
@@ -29,8 +29,7 @@ def handle_properties_changes(changed_props, invalidated_props):
             status = value
         elif "Metadata" in name:
             if(len(value) > 0):
-                title = value['xesam:artist'][0] + ' - ' + value['xesam:title']
-
+                title = getMetaData()
     if not status:
         status = mp.player.PlaybackStatus
 
