@@ -8,6 +8,8 @@ import pympris
 from see import see
 from subprocess import call
 from subprocess import check_output
+from gi.repository import GObject
+from dbus.mainloop.glib import DBusGMainLoop
 
 SPOTIFY = 'org.mpris.MediaPlayer2.spotify'
 SPOT_PATH = '/org/mpris/MediaPlayer2'
@@ -26,6 +28,7 @@ class Tasks:
     Toggle = 5
     Pause = 6
     MetaData = 7
+    Daemon = 8
     NONE = -1
 
 target = Player.NONE
@@ -37,7 +40,7 @@ def printhelp():
 def parscmd(argv):
     global task, target
     try:
-        opts, args = getopt.getopt(argv, "htsnmpa:", ["help", "action=", "player="])
+        opts, args = getopt.getopt(argv, "dhtsnmpa:", ["help", "action=", "player="])
     except getopt.GetoptError:
         printhelp()
         sys.exit(2)
@@ -57,6 +60,8 @@ def parscmd(argv):
             task = Tasks.MetaData
         elif opt == '-P':
             task = Tasks.Play
+        elif opt == '-d':
+            task = Tasks.Daemon
         elif opt in ("-a", "--action"):
             if(arg == 'play'):
                 task = Tasks.Play
@@ -99,6 +104,15 @@ def getRunningPlayer():
     else:
         return Player.NONE
 
+def getMetaData(mplayer):
+    return (mplayer.player.Metadata['xesam:artist'][0] + ' - '  + mplayer.player.Metadata['xesam:album'] + ' - ' + str(mplayer.player.Metadata['xesam:trackNumber']) + '.' + mplayer.player.Metadata['xesam:title'])
+
+def writeToFile(string):
+    fp = open("/home/swe/tmp/watch", "w")
+    unic = string.encode("UTF-8", "strict")
+    fp.write(unic)
+    fp.close()
+
 def sendDbus(player, action):
     dest=''
     path=''
@@ -133,7 +147,7 @@ def sendDbus(player, action):
         mp = pympris.MediaPlayer(players_ids[0], bus)
         status = mp.player.PlaybackStatus
         if 'play' in status.lower():
-            print(mp.player.Metadata['xesam:artist'][0] + ' - ' + mp.player.Metadata['xesam:title'])
+            print(getMetaData(mp))
         else:
             print("Pause/Stopped")
         
@@ -187,13 +201,54 @@ def sendCmus(action):
 
     call([cmd, cmdval])
 
+def handle_properties_changes(changed_props, invalidated_props):
+    status = ""
+    title = ""
+#    print(changed_props.items())
+    for name, value in changed_props.items():
+        if "PlaybackStatus" in name:
+            status = value
+        elif "Metadata" in name:
+            if(len(value) > 0):
+                title = getMetaData(mp)
+    if not status:
+        status = mp.player.PlaybackStatus
+
+    if not "play" in status.lower():
+        writeToFile("Pause/Stopped")
+    elif title:
+       writeToFile(title)
+    else:
+        writeToFile(getMetaData(mp))
+
+def runDaemon():
+    global mp
+    dbus_loop = DBusGMainLoop()
+    bus = dbus.SessionBus(mainloop=dbus_loop)
+    players_ids = list(pympris.available_players())
+    for player in players_ids:
+        mplayer = pympris.MediaPlayer(player, bus)
+        if "spoti" in mplayer.root.Identity.lower():
+            mp = mplayer
+            break
+
+    if not mp:
+        print "Spotify not found, exiting"
+        return -1
+
+    mp.player.register_properties_handler(handle_properties_changes)
+    loop = GObject.MainLoop()
+    loop.run()
+
 def main(argv):
     global task, target
     parscmd(argv)
     if(target == Player.NONE):
         target = getRunningPlayer()
 
-    if(target == Player.NONE):
+    if(task == Tasks.Daemon):
+        runDaemon()
+    elif(target == Player.NONE):
         print("No player running")    
     elif(target != Player.CMUS):
         sendDbus(target, task)
