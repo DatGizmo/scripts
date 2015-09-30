@@ -1,0 +1,6 @@
+#!/bin/bash
+
+search=$1
+
+echo Param: $search
+exec git submodule foreach "git grep $search; true; echo \"\""
