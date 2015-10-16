@@ -1,0 +1,27 @@
+#!/bin/bash
+if [ "$#" ==  "1" ]; then
+	if [ "$1" == "umount" ]; then
+		echo "Umount SD card"
+		echo "umount sdFirst" 
+		sudo umount /mnt/sdFirst
+		echo "umount sdSecond" 
+		sudo umount /mnt/sdSecond
+		echo "umount sdThird" 
+		sudo umount /mnt/sdThird
+		echo "umount sdFourth" 
+		sudo umount /mnt/sdFourth
+	else
+		echo "Try mounting SD as" $1
+		[ -b ${1}1 ] && echo "mount" $1"1 on /mnt/sdFirst" && sudo mount ${1}1 /mnt/sdFirst && ls -al /mnt/sdFirst --color=auto
+		[ -b ${1}2 ] && echo "mount" $1"2 on /mnt/sdSecond" && sudo mount ${1}2 /mnt/sdSecond && ls -al /mnt/sdSecond --color=auto
+		[ -b ${1}3 ] && echo "mount" $1"3 on /mnt/sdThird" && sudo mount ${1}3 /mnt/sdThird && ls -al /mnt/sdThird --color=auto
+		[ -b ${1}4 ] && echo "mount" $1"4 on /mnt/sdFourth" && sudo mount ${1}4 /mnt/sdFourth && ls -al /mnt/sdFourth --color=auto
+		echo -e "\nSizes:"
+		df -h | grep $1
+	fi
+else
+	echo "To many or to less parameters given." 
+	echo "  example: $0 /dev/sde" 
+	echo "  for loop devices: /dev/loop*p"
+fi
+
