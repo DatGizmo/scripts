@@ -1,0 +1,2 @@
+#!/bin/bash
+IFS=$';\x1B[' read -p $'\x1B7\x1B[r\x1B[999;999H\x1B[6n\x1B8' -d R -rst 1 _ _ LINES COLUMNS _ </dev/tty && echo cols $COLUMNS rows $LINES && stty cols $COLUMNS rows $LINES
