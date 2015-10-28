@@ -1,0 +1,1 @@
+dstat --nocolor --noupdate -d 1 1 | tail -1
