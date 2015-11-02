@@ -183,6 +183,8 @@ def sendCmus(action):
         
         artist = ""
         title = ""
+        trackNumber = ""
+        album = ""
         for item in submetaData:
             if 'status' in item.lower():
                 if not 'play' in item.lower():
@@ -194,9 +196,15 @@ def sendCmus(action):
             elif 'artist' in item.lower():
                 start = item.find('artist') + 7
                 artist = item [start:len(item)]
+            elif 'album' in item.lower():
+                start = item.find('album') + 6
+                album = item [start:len(item)]
+            elif 'tracknumber' in item.lower():
+                start = item.find('tracknumber') + 12
+                trackNumber = item [start:len(item)]
 
         if artist:
-            print(artist + ' - ' + title)
+            print(artist + ' - ' + album + ' - ' + trackNumber + '.' + title)
         return
 
     call([cmd, cmdval])
