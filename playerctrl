@@ -18,6 +18,7 @@ SPOT_VLC_IFACE = 'org.mpris.MediaPlayer2.Player'
 class Player:
     Spotify = 'spotify'
     CMUS = 'cmus'
+    MPD = 'mpd'
     NONE = -1
 
 class Tasks:
@@ -101,6 +102,8 @@ def getRunningPlayer():
         return Player.Spotify
     elif(getPid(Player.CMUS)):
         return Player.CMUS
+    elif(getPid(Player.MPD)):
+        return Player.MPD
     else:
         return Player.NONE
 
@@ -209,6 +212,34 @@ def sendCmus(action):
 
     call([cmd, cmdval])
 
+def sendMpd(action):
+    
+    cmd = "mpc"
+    hostCmd = "-h"
+    hostVal = "sweMpd@10.12.12.2"
+    portCmd = "-p"
+    portVal = "6600"
+    cmdArray = [cmd, hostCmd, hostVal, portCmd, portVal]
+
+    if(action == Tasks.Play):
+        cmdArray.append("play")
+    elif(action == Tasks.Pause):
+        cmdArray.append("pause")
+    elif(action == Tasks.Stop):
+        cmdArray.append("stop")
+    elif(action == Tasks.Next):
+        cmdArray.append("next")
+    elif(action == Tasks.Prev):
+        cmdArray.append("prev")
+    elif(action == Tasks.Toggle):
+        cmdArray.append("toggle")
+    elif(action == Tasks.MetaData):
+        cmdArray.append("-f")
+        cmdArray.append("%artist% - %album% - %track%.%title%")
+        cmdArray.append("current")
+
+    call(cmdArray)
+
 def handle_properties_changes(changed_props, invalidated_props):
     status = ""
     title = ""
@@ -258,10 +289,12 @@ def main(argv):
         runDaemon()
     elif(target == Player.NONE):
         print("No player running")    
-    elif(target != Player.CMUS):
-        sendDbus(target, task)
-    else:
+    elif(target == Player.CMUS):
         sendCmus(task)
+    elif(target == Player.MPD):
+        sendMpd(task)
+    else:
+        sendDbus(target, task)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
