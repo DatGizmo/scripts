@@ -10,6 +10,7 @@ from subprocess import call
 from subprocess import check_output
 from gi.repository import GObject
 from dbus.mainloop.glib import DBusGMainLoop
+from mpd import MPDClient
 
 SPOTIFY = 'org.mpris.MediaPlayer2.spotify'
 SPOT_PATH = '/org/mpris/MediaPlayer2'
@@ -41,7 +42,7 @@ def printhelp():
 def parscmd(argv):
     global task, target
     try:
-        opts, args = getopt.getopt(argv, "dhtsnmpa:", ["help", "action=", "player="])
+        opts, args = getopt.getopt(argv, "dhtsnmpa:P", ["help", "action=", "player="])
     except getopt.GetoptError:
         printhelp()
         sys.exit(2)
@@ -74,6 +75,8 @@ def parscmd(argv):
                 task = Tasks.Prev
             elif(arg == 'toggle'):
                 task = Tasks.Toggle
+            elif(arg == 'pause'):
+                task = Tasks.Pause
             else:
                 print("Unkown task")
                 printhelp()
@@ -213,32 +216,32 @@ def sendCmus(action):
     call([cmd, cmdval])
 
 def sendMpd(action):
-    
-    cmd = "mpc"
-    hostCmd = "-h"
-    hostVal = "sweMpd@10.12.12.2"
-    portCmd = "-p"
-    portVal = "6600"
-    cmdArray = [cmd, hostCmd, hostVal, portCmd, portVal]
+
+    mpc = MPDClient()
+    mpc.timeout = 10
+    mpc.idletimeout = None
+    mpc.connect("10.12.12.2", 6600)
+    mpc.password("sweMpd")
 
     if(action == Tasks.Play):
-        cmdArray.append("play")
+        mpc.play()
     elif(action == Tasks.Pause):
-        cmdArray.append("pause")
+        mpc.pause()
     elif(action == Tasks.Stop):
-        cmdArray.append("stop")
+        mpc.stop()
     elif(action == Tasks.Next):
-        cmdArray.append("next")
+        mpc.next()
     elif(action == Tasks.Prev):
-        cmdArray.append("prev")
+        mpc.previous()
     elif(action == Tasks.Toggle):
-        cmdArray.append("toggle")
+        mpc.pause()
     elif(action == Tasks.MetaData):
-        cmdArray.append("-f")
-        cmdArray.append("%artist% - %album% - %track%.%title%")
-        cmdArray.append("current")
-
-    call(cmdArray)
+        song = mpc.currentsong()
+        if(mpc.status()['state'] != "play"):
+            print("Pause/Stopped")
+        else:
+            print(song['artist'] + " - " + song['album'] + " - " + song["track"] + "." + song['title']) 
+    mpc.close()
 
 def handle_properties_changes(changed_props, invalidated_props):
     status = ""
