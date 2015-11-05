@@ -1,0 +1,12 @@
+#!/bin/bash
+
+bitbake $@
+result="$?" 
+success="Success"
+error="Error"
+
+if [ "0" = "$result" ] ; then
+  sbc notify $@ $success
+else
+  sbc notifycrit $@ $error
+fi
