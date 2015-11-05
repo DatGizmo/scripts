@@ -2,7 +2,7 @@
 PORT="$2"
 NAME="$3"
 ACTION="$1"
-PATH="$0"
+EXECPATH="$0"
 
 help_me()
 {
@@ -29,7 +29,7 @@ die ()
 [ -z "${PORT}" ] && die "you need a port parameter"
 [ -z "${NAME}" ] && die "you need a name parameter"
 
-path="${PATH%/*}"
+path="${EXECPATH%/*}"
 
 bitbake-prserv -f $path/${NAME}.sqlite3 -l $path/${NAME}.log --host=localhost --port ${PORT} --${ACTION} 
 
