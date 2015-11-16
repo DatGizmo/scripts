@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# enable or disable
+MOD="$1"
+
+# network like 10.0.2.0/24
+NETWORK="$2"
+
+# output device like "eth0"
+OUTPUT="$3"
+
+# global for disable all masquerade rules and ip forwarding
+global="0"
+
+# some helper functions
+help_me ()
+{
+	printf "%s MOD NETWORK OUTPUT\n \
+	\n \
+	MOD =                   --> enable or disable forwarding (enable, disable[g]) \n \
+	NETWORK                 --> the network which should be able to nat. e.g. 10.0.2.0/24\n \
+	OUTPUT                  --> output device like eth0\n\n" \
+	"$0"
+
+	exit 1
+}
+
+die ()
+{
+	local message="$1"
+
+	echo "die: $message"
+	exit 1
+}
+
+[ "${MOD}" != "enable" ] && [ "${MOD}" != "disable" ] &&  [ "${MOD}" != "disableg" ] && help_me
+[ "${MOD}" == "disableg" ] && global="1" && MOD="disable"
+
+[ -z "${NETWORK}" ] && die "you need a network parameter"
+[ -z "${OUTPUT}" ] && die "you need a output parameter"
+
+if [ "${MOD}" == "disable" ]; then
+	[ "${global}" == "1" ] && sysctl net/ipv4/ip_forward=0
+		iptables -t nat -D POSTROUTING -s "${NETWORK}" -o "${OUTPUT}" -j MASQUERADE
+else
+	sysctl net/ipv4/ip_forward=1
+	iptables -t nat -A POSTROUTING -s "${NETWORK}" -o "${OUTPUT}" -j MASQUERADE
+fi
