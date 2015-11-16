@@ -1,0 +1,22 @@
+#!/bin/bash
+
+LOOPS=0
+SOURCE=$1
+TARGET=$2
+LOOPS=$3
+
+FILES=("openarena-0.8.8.zip dmo-image-x11-imx6q-dmo-edm-qmx6-20150708093037.rootfs.tar.bz2 PlaneFullHD.mp4")
+
+cd $TARGET
+
+until [ $LOOPS -lt 1 ]; do
+	for file in $FILES;
+	do
+		echo "Copying $file"
+		cp $SOURCE/$file $TARGET
+		cp $SOURCE/$file.md5 $TARGET
+		md5sum -c $SOURCE/$file.md5
+	done
+	let LOOPS-=1	
+done
+
