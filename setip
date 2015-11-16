@@ -1,0 +1,5 @@
+#!/bin/bash
+ip addr add $1 dev $2
+ip link set $2 up
+ip route add 10.12.12.0/24 via $1 dev $2
+
