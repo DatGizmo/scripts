@@ -1,0 +1,14 @@
+#!/bin/bash
+IMG=$1
+TARGET=$2
+
+[ -z $IMG ] && echo "Image not given" && exit 1
+[ -z $TARGET ] && echo "Target not given" && exit 1
+
+[ ! -f $IMG ] && echo "Image file does not exists" && exit 1
+TEST=$TARGET"1"
+echo $TEST
+[ ! -b "$TEST" ] && echo "The given device does net exist, or has not a first partition" && exit 1
+
+pv $IMG | dd of=$TARGET && notify-send $IMG 'copy done'
+
