@@ -240,7 +240,20 @@ def sendMpd(action):
         if(mpc.status()['state'] != "play"):
             print("Pause/Stopped")
         else:
-            print(song['artist'] + " - " + song['album'] + " - " + song["track"] + "." + song['title']) 
+            artist = ''
+            album = ''
+            track = ''
+            title = ''
+            if 'artist' in song:
+                artist = song['artist']  + " - "
+            if 'album' in song:
+                album = song['album']  + " - "
+            if 'track' in song:
+                track = song["track"]  + "."
+            if 'title' in song:
+                title = song['title']
+
+            print(artist + album + track + title) 
     mpc.close()
 
 def handle_properties_changes(changed_props, invalidated_props):
