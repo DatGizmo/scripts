@@ -5,6 +5,7 @@ import getopt
 import psutil
 import dbus
 import pympris
+import datetime
 from see import see
 from subprocess import call
 from subprocess import check_output
@@ -31,6 +32,7 @@ class Tasks:
     Pause = 6
     MetaData = 7
     Daemon = 8
+    Tmux = 9
     NONE = -1
 
 target = Player.NONE
@@ -42,7 +44,7 @@ def printhelp():
 def parscmd(argv):
     global task, target
     try:
-        opts, args = getopt.getopt(argv, "dhtsnmpa:P", ["help", "action=", "player="])
+        opts, args = getopt.getopt(argv, "dhtsnmpa:P", ["help", "action=", "player=", "tmux"])
     except getopt.GetoptError:
         printhelp()
         sys.exit(2)
@@ -89,6 +91,8 @@ def parscmd(argv):
                 print("Unkown player")
                 printhelp()
                 sys.exit(1)
+        elif opt in ("--tmux"):
+            task = Tasks.Tmux
         else:
             print("Unkown option %s"% opt);
             printhelp()
@@ -215,6 +219,26 @@ def sendCmus(action):
 
     call([cmd, cmdval])
 
+def getMpdMetadata(mpc):
+    song = mpc.currentsong()
+    retval = ""
+    artist = ''
+    album = ''
+    track = ''
+    title = ''
+    if 'artist' in song:
+        artist = song['artist']  + " - "
+    if 'album' in song:
+        album = song['album']  + " - "
+    if 'track' in song:
+        track = song["track"]  + "."
+    if 'title' in song:
+        title = song['title']
+    
+    retval = artist + album + track + title
+
+    return retval
+
 def sendMpd(action):
 
     mpc = MPDClient()
@@ -236,24 +260,37 @@ def sendMpd(action):
     elif(action == Tasks.Toggle):
         mpc.pause()
     elif(action == Tasks.MetaData):
-        song = mpc.currentsong()
         if(mpc.status()['state'] != "play"):
             print("Pause/Stopped")
         else:
-            artist = ''
-            album = ''
-            track = ''
-            title = ''
-            if 'artist' in song:
-                artist = song['artist']  + " - "
-            if 'album' in song:
-                album = song['album']  + " - "
-            if 'track' in song:
-                track = song["track"]  + "."
-            if 'title' in song:
-                title = song['title']
+            print(getMpdMetadata(mpc))
+    elif(action == Tasks.Tmux):
+        if(mpc.status()['state'] != "play"):
+            print("Pause/Stopped")
+        else:
+            printstr=""
+            maxlen = 40
+            steps = 3
+            mod = 60/steps
+            titel = getMpdMetadata(mpc) 
+            length = len(titel) 
+            if length > maxlen:
+                now = datetime.datetime.now()
+                start = now.second % mod 
+                if maxlen + mod < length:
+                    start*=steps
+                end = start + maxlen
+                if end > length:
+                    end = length
+                
+                printstr = titel[start:end]
+                prlen = len(printstr)
+                if(prlen < maxlen):
+                    printstr = printstr + " | " + titel[0:(maxlen-prlen-3)]
+                print(printstr)
+            else:
+                print(titel)
 
-            print(artist + album + track + title) 
     mpc.close()
 
 def handle_properties_changes(changed_props, invalidated_props):
