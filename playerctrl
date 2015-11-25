@@ -38,7 +38,19 @@ target = Player.NONE
 task = Tasks.NONE
 
 def printhelp():
-    print('playerctrl.py -a <action> [--player <player>]')
+    print('playerctrl -a <action> [--player <player>]')
+    print('     actions: play (-P)')
+    print('              stop (-s)')
+    print('              next (-n)')
+    print('              prev (-p)')
+    print('              toggle (-t)')
+    print('              pause ')
+    print('              metadata (-m)')
+    print('              tmux (--tmux)')
+    print('              daemon (-d): Only works with spotify')
+    print('     player:  if player is empty the player is auto detected')
+    print('              spotify')
+    print('              mpd')
 
 def parscmd(argv):
     global task, target
