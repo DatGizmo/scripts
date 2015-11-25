@@ -100,6 +100,8 @@ def parscmd(argv):
         elif opt in ("--player"):
             if(arg == 'spotify'):
                 target = Player.Spotify
+            elif(arg == 'mpd'):
+                target = Player.MPD
             else:
                 print("Unkown player")
                 printhelp()
