@@ -90,6 +90,10 @@ def parscmd(argv):
                 task = Tasks.Toggle
             elif(arg == 'pause'):
                 task = Tasks.Pause
+            elif(arg == 'metadata'):
+                task = Tasks.MetaData
+            elif(arg == 'tmux'):
+                task = Tasks.Tmux
             else:
                 print("Unkown task")
                 printhelp()
