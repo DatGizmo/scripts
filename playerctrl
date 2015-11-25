@@ -152,12 +152,16 @@ def sendDbus(player, action):
         iface.Previous()
     elif(action == Tasks.Toggle):
         iface.PlayPause()
-    elif(action == Tasks.MetaData):
+    elif(action == Tasks.MetaData or action == Tasks.Tmux):
         players_ids = list(pympris.available_players())
         mp = pympris.MediaPlayer(players_ids[0], bus)
         status = mp.player.PlaybackStatus
         if 'play' in status.lower():
-            print(getMetaData(mp))
+            titel = getMetaData(mp)
+            if(action == Tasks.Tmux):
+                writeTmux(titel)
+            else:
+                print(titel)
         else:
             print("Pause/Stopped")
         
@@ -239,6 +243,29 @@ def getMpdMetadata(mpc):
 
     return retval
 
+def writeTmux(titel):
+    printstr=""
+    maxlen = 40
+    steps = 3
+    mod = 60/steps
+    length = len(titel)
+    if length > maxlen:
+        now = datetime.datetime.now()
+        start = now.second % mod
+        if maxlen + mod < length:
+            start*=steps
+        end = start + maxlen
+        if end > length:
+            end = length
+
+        printstr = titel[start:end]
+        prlen = len(printstr)
+        if(prlen + 3 < maxlen):
+            printstr = printstr + " | " + titel[0:(maxlen-prlen-3)]
+        print(printstr)
+    else:
+        print(titel)
+
 def sendMpd(action):
 
     mpc = MPDClient()
@@ -259,35 +286,13 @@ def sendMpd(action):
         mpc.previous()
     elif(action == Tasks.Toggle):
         mpc.pause()
-    elif(action == Tasks.MetaData):
+    elif(action == Tasks.MetaData or action == Tasks.Tmux):
         if(mpc.status()['state'] != "play"):
             print("Pause/Stopped")
         else:
-            print(getMpdMetadata(mpc))
-    elif(action == Tasks.Tmux):
-        if(mpc.status()['state'] != "play"):
-            print("Pause/Stopped")
-        else:
-            printstr=""
-            maxlen = 40
-            steps = 3
-            mod = 60/steps
-            titel = getMpdMetadata(mpc) 
-            length = len(titel) 
-            if length > maxlen:
-                now = datetime.datetime.now()
-                start = now.second % mod 
-                if maxlen + mod < length:
-                    start*=steps
-                end = start + maxlen
-                if end > length:
-                    end = length
-                
-                printstr = titel[start:end]
-                prlen = len(printstr)
-                if(prlen < maxlen):
-                    printstr = printstr + " | " + titel[0:(maxlen-prlen-3)]
-                print(printstr)
+            titel = getMpdMetadata(mpc)
+            if(action == Tasks.Tmux):
+                writeTmux(titel)
             else:
                 print(titel)
 
