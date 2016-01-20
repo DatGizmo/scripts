@@ -11,7 +11,7 @@ help_me()
 		ACTION	--> start or stop \n \
 		PORT	--> the port of the server, should be the same as in the PRSERVER_HOST var of local.conf\n \
 		NAME	--> name of the sqlite and server file\n \
-		The log and sqlite3 file will be created at the folder where the script is executed."\
+		The log and sqlite3 file will be created at the folder where the script is executed.\n"\
 		"$0"
 
 	exit 1
