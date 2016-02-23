@@ -168,7 +168,8 @@ def sendDbus(player, action):
     elif(action == Tasks.MetaData or action == Tasks.Tmux):
         players_ids = list(pympris.available_players())
         mp = pympris.MediaPlayer(players_ids[0], bus)
-        status = mp.player.PlaybackStatus
+        #status = mp.player.PlaybackStatus
+        status = 'play'
         if 'play' in status.lower():
             titel = getMetaData(mp)
             if(action == Tasks.Tmux):
