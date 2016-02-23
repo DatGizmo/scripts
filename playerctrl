@@ -227,8 +227,8 @@ def sendMpd(action):
     mpc = MPDClient()
     mpc.timeout = 10
     mpc.idletimeout = None
-    mpc.connect("10.12.12.2", 6600)
-    mpc.password("sweMpd")
+    mpc.connect("MpdHost", 6600)
+    mpc.password("GizmoMpd")
 
     if(action == Tasks.Play):
         mpc.play()
