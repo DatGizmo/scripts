@@ -1,1 +1,1 @@
-setxkbmap -layout de,us -variant neo,altgr-intl -option -option grp:sclk_toggle -option grp_led:scroll
+setxkbmap -model pc105 -layout de -variant neo
