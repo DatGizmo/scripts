@@ -245,7 +245,10 @@ def sendMpd(action):
     elif(action == Tasks.Prev):
         mpc.previous()
     elif(action == Tasks.Toggle):
-        mpc.pause()
+        if(mpc.status()['state'] != "play"):
+            mpc.play()
+        else:
+            mpc.pause()
     elif(action == Tasks.VolInc):
         vol = int(mpc.status()['volume'])
         mpc.setvol(vol+3)
