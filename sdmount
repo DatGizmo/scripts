@@ -1,23 +1,41 @@
 #!/bin/bash
-if [ "$#" ==  "1" ]; then
+if [ $# -lt 3 ]; then
 	if [ "$1" == "umount" ]; then
 		echo "Umount SD card"
-		echo "umount sdFirst" 
+		echo "umount sdFirst"
 		umount /mnt/sdFirst
-		echo "umount sdSecond" 
+		echo "umount sdSecond"
 		umount /mnt/sdSecond
-		echo "umount sdThird" 
+		echo "umount sdThird"
 		umount /mnt/sdThird
-		echo "umount sdFourth" 
+		echo "umount sdFourth"
 		umount /mnt/sdFourth
+		echo "umount sdFifth"
+		umount /mnt/sdFifth
+		echo "umount sdSixth"
+		umount /mnt/sdSixth
 	else
-		echo "Try mounting SD as" $1
-		[ -b ${1}1 ] && echo "mount" $1"1 on /mnt/sdFirst" && mount ${1}1 /mnt/sdFirst && ls -al /mnt/sdFirst --color=auto
-		[ -b ${1}2 ] && echo "mount" $1"2 on /mnt/sdSecond" && mount -o data=ordered ${1}2 /mnt/sdSecond && ls -al /mnt/sdSecond --color=auto
-		[ -b ${1}3 ] && echo "mount" $1"3 on /mnt/sdThird" && mount -o data=ordered ${1}3 /mnt/sdThird && ls -al /mnt/sdThird --color=auto
-		[ -b ${1}4 ] && echo "mount" $1"4 on /mnt/sdFourth" && mount -o data=ordered ${1}4 /mnt/sdFourth && ls -al /mnt/sdFourth --color=auto
+
+		if [ $# == 1 ] || [ "$2" == "dmo" ]; then
+
+			echo "Try mounting SD as" $1
+			[ -b ${1}1 ] && echo "mount" $1"1 on /mnt/sdFirst" && mount ${1}1 /mnt/sdFirst && ls -al /mnt/sdFirst --color=auto
+			[ -b ${1}2 ] && echo "mount" $1"2 on /mnt/sdSecond" && mount ${1}2 /mnt/sdSecond && ls -al /mnt/sdSecond --color=auto
+			[ -b ${1}3 ] && echo "mount" $1"3 on /mnt/sdThird" && mount ${1}3 /mnt/sdThird && ls -al /mnt/sdThird --color=auto
+			[ -b ${1}4 ] && echo "mount" $1"4 on /mnt/sdFourth" && mount ${1}4 /mnt/sdFourth && ls -al /mnt/sdFourth --color=auto
+
+		elif [ "$2" == "czm" ]; then
+			echo "Try mounting SD as czm " $1
+			[ -b ${1}1 ] && echo "mount" $1"1 on /mnt/sdFirst" && mount ${1}1 /mnt/sdFirst && ls -al /mnt/sdFirst --color=auto
+			[ -b ${1}2 ] && echo "mount" $1"2 on /mnt/sdSecond" && mount ${1}2 /mnt/sdSecond && ls -al /mnt/sdSecond --color=auto
+			[ -b ${1}5 ] && echo "mount" $1"5 on /mnt/sdThird" && mount ${1}5 /mnt/sdThird && ls -al /mnt/sdThird --color=auto
+			[ -b ${1}6 ] && echo "mount" $1"6 on /mnt/sdFourth" && mount ${1}6 /mnt/sdFourth && ls -al /mnt/sdFourth --color=auto
+			[ -b ${1}7 ] && echo "mount" $1"7 on /mnt/sdFifth" && mount ${1}7 /mnt/sdFifth && ls -al /mnt/sdFifth --color=auto
+			[ -b ${1}8 ] && echo "mount" $1"8 on /mnt/sdSixth" && mount ${1}8 /mnt/sdSixth && ls -al /mnt/sdSixth --color=auto
+
+		fi
 		echo -e "\nSizes:"
-		df -h /mnt/sd*/
+		df -h /mnt/sd*/ | sort
 	fi
 else
 	echo "To many or to less parameters given." 
