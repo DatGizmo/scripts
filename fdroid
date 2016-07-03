@@ -1,0 +1,12 @@
+#!/bin/bash
+if ! mount | grep '/mnt/fdroid' > /dev/null ; then
+    mount /mnt/fdroid
+fi
+
+OEFFI=$(curl -s http://oeffi.schildbach.de/download.html | grep aosp | cut -d\" -f2)
+if [ ! -e /mnt/fdroid/$OEFFI ]; then
+    wget http://oeffi.schildbach.de/$OEFFI -O /mnt/fdroid/$OEFFI
+fi
+wget http://matrix.org/jenkins/job/VectorAndroidDevelop/lastStableBuild/artifact/vector/build/outputs/apk/vector-app-debug.apk -O /mnt/fdroid/vector-app-debug.apk
+
+docker run --rm -v /mnt/fdroid:/apk/repo -v /mnt/fdroid/config.py:/apk/config.py -v /mnt/fdroid/my.keystore:/tmp/my.keystore gotsunami/fdroid
