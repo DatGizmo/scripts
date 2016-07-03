@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ~/raccoon
+java -jar raccoon.jar 
+

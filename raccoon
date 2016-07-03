@@ -1,0 +1,9 @@
+#!/bin/bash
+cd ~/raccoon
+java -jar raccoon.jar -a ~/Raccoon/archives/default/ -u
+
+if ! mount | grep '/mnt/fdroid' > /dev/null ; then
+    mount /mnt/fdroid
+fi
+find /home/gizmo/Raccoon/archives/default/apk_storage/ -name '*.apk' -exec cp -n {} /mnt/fdroid \;
+
