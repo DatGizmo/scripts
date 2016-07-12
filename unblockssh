@@ -1,0 +1,9 @@
+#!/bin/bash
+LINE="$1"
+
+if [ -z "${LINE}" ]; then
+    printf "Line number missing\n"
+else
+    iptables -D sshguard $LINE
+fi
+
