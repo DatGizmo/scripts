@@ -1,0 +1,12 @@
+#!/bin/bash
+cd ~/raccoon
+java -jar raccoon.jar -a ~/Raccoon/archives/default/ -u
+
+find ~/Raccoon/archives/default/apk_storage/ -name '*.apk' -exec cp -n {} /hdd/fdroid \;
+
+OEFFI=$(curl -s http://oeffi.schildbach.de/download.html | grep aosp | cut -d\" -f2)
+if [ ! -e /hdd/fdroid/$OEFFI ]; then
+    wget http://oeffi.schildbach.de/$OEFFI -O /hdd/fdroid/$OEFFI
+    fi
+    wget http://matrix.org/jenkins/job/VectorAndroidDevelop/lastStableBuild/artifact/vector/build/outputs/apk/vector-app-debug.apk -O /hdd/fdroid/vector-app-debug.apk
+
