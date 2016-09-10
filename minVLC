@@ -1,0 +1,5 @@
+#!/bin/bash
+WIN=$(xdotool search --name "VLC media Player")
+for w in $WIN; do
+    xdotool windowminimize $w
+done
