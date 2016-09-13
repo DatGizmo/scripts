@@ -221,9 +221,9 @@ def writeTmux(titel):
         prlen = len(printstr)
         if(prlen + 3 < maxlen):
             printstr = printstr + " | " + titel[0:(maxlen-prlen-3)]
-        print(printstr)
+        print(printstr).encode('utf-8')
     else:
-        print(titel)
+        print(titel).encode('utf-8')
 
 def sendMpd(action):
 
