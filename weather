@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IMNCHEN1820.json"
+URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IMNCHEN1714.json"
 if [ "$1" == "-g" ]; then
         URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IGILCHIN38.json"
 fi
