@@ -219,7 +219,7 @@ def writeTmux(titel):
 
         printstr = titel[start:end]
         prlen = len(printstr)
-        if(prlen + 3 < maxlen):
+        if(prlen + 1 < maxlen):
             printstr = printstr + " | " + titel[0:(maxlen-prlen-3)]
         print(printstr).encode('utf-8')
     else:
