@@ -6,6 +6,7 @@ import psutil
 import dbus
 import pympris
 import datetime
+import math
 from see import see
 from subprocess import call
 from subprocess import check_output
@@ -205,22 +206,25 @@ def getMpdMetadata(mpc):
 def writeTmux(titel):
     printstr=""
     maxlen = 40
-    steps = 3
-    mod = 60/steps
+    mod = 15
     length = len(titel)
+    steps = int(math.ceil((float(length)+3)/mod))
+
     if length > maxlen:
         now = datetime.datetime.now()
         start = now.second % mod
-        if maxlen + mod < length:
-            start*=steps
+        start *= steps
+        if start >= length:
+            start = 0
         end = start + maxlen
         if end > length:
             end = length
 
         printstr = titel[start:end]
         prlen = len(printstr)
-        if(prlen + 1 < maxlen):
-            printstr = printstr + " | " + titel[0:(maxlen-prlen-3)]
+        if(prlen < maxlen):
+            printstr = printstr + " | " + titel[0:(maxlen-prlen)]
+            printstr = printstr[0:maxlen]
         print(printstr).encode('utf-8')
     else:
         print(titel).encode('utf-8')
