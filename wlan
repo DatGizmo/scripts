@@ -1,0 +1,10 @@
+#!/bin/bash
+SSID=$1
+PASSWD=$2
+dev=$(iw dev | grep Interface | awk -F " " '{print $2}')
+
+ip link set $dev up
+#iw dev $dev connect WLAN-11g-AP key 0:12345
+wpa_supplicant -B nl80211,wext -i $dev -c <(wpa_passphrase $SSID $PASSWD)
+
+
