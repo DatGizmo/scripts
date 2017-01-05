@@ -9,5 +9,7 @@ TARGET=$2
 TEST=$TARGET"1"
 [ ! -b "$TEST" ] && echo "The given device does net exist, or has not a first partition" && exit 1
 
+[[ ! -z "$(grep $TARGET /proc/mounts)" ]] && echo "The target device is mounted! Please unmount first" && exit 1
+
 pv $IMG | dd of=$TARGET && notify-send $IMG 'copy done'
 
