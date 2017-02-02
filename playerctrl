@@ -35,10 +35,14 @@ class Tasks:
     Tmux = 9
     VolInc = 10
     VolDec = 11
+    SecFwd = 12
+    SecBwd = 13
+    Seek = 14
     NONE = -1
 
 target = Player.NONE
 task = Tasks.NONE
+seekTime = 0
 
 def printhelp():
     print('playerctrl -a <action> [--player <player>]')
@@ -56,9 +60,9 @@ def printhelp():
     print('              mpd')
 
 def parscmd(argv):
-    global task, target
+    global task, target, seekTime
     try:
-        opts, args = getopt.getopt(argv, "idhtsnmpa:P", ["help", "action=", "player=", "tmux"])
+        opts, args = getopt.getopt(argv, "idhtsnmpa:P", ["help", "action=", "player=", "tmux", "sf", "sb", "seek="])
     except getopt.GetoptError:
         printhelp()
         sys.exit(2)
@@ -113,6 +117,19 @@ def parscmd(argv):
                 sys.exit(1)
         elif opt in ("--tmux"):
             task = Tasks.Tmux
+        elif opt in ("--sf"):
+            task = Tasks.SecFwd
+        elif opt in ("--sb"):
+            task = Tasks.SecBwd
+        elif opt in ("--seek"):
+            task = Tasks.Seek
+            timestr = arg
+            inx = timestr.find(":")
+            if(inx > 0):
+                seekTime = int(timestr[:inx])*60
+                seekTime += int(timestr[inx+1:])
+            else:
+                seekTime = timestr
         else:
             print("Unkown option %s"% opt);
             printhelp()
@@ -258,6 +275,12 @@ def sendMpd(action):
     elif(action == Tasks.VolDec):
         vol = int(mpc.status()['volume'])
         mpc.setvol(vol-3)
+    elif(action == Tasks.SecBwd):
+        mpc.seekcur("-30")
+    elif(action == Tasks.SecFwd):
+        mpc.seekcur("+30")
+    elif(action == Tasks.Seek):
+        mpc.seekcur(seekTime)
     elif(action == Tasks.MetaData or action == Tasks.Tmux):
         if(mpc.status()['state'] != "play"):
             print("Pause/Stopped")
