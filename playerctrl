@@ -74,11 +74,14 @@ class TitleData(object):
             payload = {'artist': self.artist, 'title': self.title}
             r = requests.get('https://makeitpersonal.co/lyrics', params = payload)
             self.lyric = r.text
+            if self.lyric[0] == '\n':
+                self.lyric = self.lyric[1:len(self.lyric)]
+            if self.lyric[len(self.lyric)-1] == '\n':
+                self.lyric = self.lyric[0:len(self.lyric)-1]
 
         print self
         print ""
         print self.lyric
-
 
 target = Player.NONE
 task = Tasks.NONE
