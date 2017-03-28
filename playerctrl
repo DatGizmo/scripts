@@ -13,6 +13,8 @@ from subprocess import check_output
 from gi.repository import GObject
 from dbus.mainloop.glib import DBusGMainLoop
 from mpd import MPDClient
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 SPOTIFY = 'org.mpris.MediaPlayer2.spotify'
 SPOT_PATH = '/org/mpris/MediaPlayer2'
