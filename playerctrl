@@ -7,6 +7,7 @@ import dbus
 import pympris
 import datetime
 import math
+import requests
 from see import see
 from subprocess import call
 from subprocess import check_output
@@ -40,11 +41,49 @@ class Tasks:
     SecFwd = 12
     SecBwd = 13
     Seek = 14
+    Lyric = 15
     NONE = -1
+
+class TitleData(object):
+    def __init__(self, artist, album, track, title):
+        self.artist = artist
+        self.album = album
+        self.track = track
+        self.title = title
+        self.lyric = ''
+
+    def __str__(self):
+        retval = ''
+        if self.artist:
+            retval += self.artist + " - "
+        if self.album:
+            retval += self.album + " - "
+        if self.track:
+            retval += self.track + "."
+        if self.title:
+            retval += self.title
+        if not retval:
+            retval = "No data set"
+        return retval
+
+    def toString(self):
+        return self.__str__()
+
+    def getLyric(self):
+        if not self.lyric:
+            payload = {'artist': self.artist, 'title': self.title}
+            r = requests.get('https://makeitpersonal.co/lyrics', params = payload)
+            self.lyric = r.text
+
+        print self
+        print ""
+        print self.lyric
+
 
 target = Player.NONE
 task = Tasks.NONE
 seekTime = 0
+songData = None
 
 def printhelp():
     print('playerctrl -a <action> [--player <player>]')
@@ -62,9 +101,9 @@ def printhelp():
     print('              mpd')
 
 def parscmd(argv):
-    global task, target, seekTime
+    global task, target, seekTime, songData
     try:
-        opts, args = getopt.getopt(argv, "idhtsnmpa:P", ["help", "action=", "player=", "tmux", "sf", "sb", "seek="])
+        opts, args = getopt.getopt(argv, "lidhtsnmpa:P", ["help", "action=", "player=", "tmux", "sf", "sb", "seek=", "artist=", "title="])
     except getopt.GetoptError:
         printhelp()
         sys.exit(2)
@@ -88,6 +127,8 @@ def parscmd(argv):
             task = Tasks.VolDec
         elif opt == '-i':
             task = Tasks.VolInc
+        elif opt == '-l':
+            task = Tasks.Lyric
         elif opt in ("-a", "--action"):
             if(arg == 'play'):
                 task = Tasks.Play
@@ -132,6 +173,16 @@ def parscmd(argv):
                 seekTime += int(timestr[inx+1:])
             else:
                 seekTime = timestr
+        elif opt in ("--artist"):
+            if songData is None:
+                songData = TitleData(arg, '', '', '')
+            else:
+                songData.artist = arg
+        elif opt in ("--title"):
+            if songData is None:
+                songData = TitleData('', '', '', title)
+            else:
+                songData.title = arg
         else:
             print("Unkown option %s"% opt);
             printhelp()
@@ -152,7 +203,7 @@ def getRunningPlayer():
         return Player.NONE
 
 def getMetaData(mplayer):
-    return (mplayer.player.Metadata['xesam:artist'][0] + ' - '  + mplayer.player.Metadata['xesam:album'] + ' - ' + str(mplayer.player.Metadata['xesam:trackNumber']) + '.' + mplayer.player.Metadata['xesam:title'])
+    return TitleData(mplayer.player.Metadata['xesam:artist'][0], mplayer.player.Metadata['xesam:album'], str(mplayer.player.Metadata['xesam:trackNumber']), mplayer.player.Metadata['xesam:title'])
 
 def writeToFile(string):
     fp = open("/home/swe/tmp/watch", "w")
@@ -196,7 +247,7 @@ def sendDbus(player, action):
         if 'play' in status.lower():
             titel = getMetaData(mp)
             if(action == Tasks.Tmux):
-                writeTmux(titel)
+                writeTmux(titel.toString())
             else:
                 print(titel)
         else:
@@ -204,23 +255,21 @@ def sendDbus(player, action):
         
 def getMpdMetadata(mpc):
     song = mpc.currentsong()
-    retval = ""
     artist = ''
     album = ''
     track = ''
     title = ''
+    td = TitleData(artist, album, track, title)
     if 'artist' in song:
-        artist = song['artist']  + " - "
+        td.artist = song['artist']
     if 'album' in song:
-        album = song['album']  + " - "
+        td.album = song['album']
     if 'track' in song:
-        track = song["track"]  + "."
+        td.track = song["track"]
     if 'title' in song:
-        title = song['title']
+        td.title = song['title']
     
-    retval = artist + album + track + title
-
-    return retval
+    return td
 
 def writeTmux(titel):
     printstr=""
@@ -289,9 +338,12 @@ def sendMpd(action):
         else:
             titel = getMpdMetadata(mpc)
             if(action == Tasks.Tmux):
-                writeTmux(titel)
+                writeTmux(titel.toString())
             else:
-                print(titel)
+                print titel
+    elif(task == Tasks.Lyric):
+        td = getMpdMetadata(mpc)
+        td.getLyric()
 
     mpc.close()
 
@@ -311,9 +363,9 @@ def handle_properties_changes(changed_props, invalidated_props):
     if not "play" in status.lower():
         writeToFile("Pause/Stopped")
     elif title:
-       writeToFile(title)
+       writeToFile(title.toString())
     else:
-        writeToFile(getMetaData(mp))
+        writeToFile(getMetaData(mp).toString())
 
 def runDaemon():
     global mp
@@ -335,13 +387,15 @@ def runDaemon():
     loop.run()
 
 def main(argv):
-    global task, target
+    global task, target, songData
     parscmd(argv)
     if(target == Player.NONE):
         target = getRunningPlayer()
 
     if(task == Tasks.Daemon):
         runDaemon()
+    elif(task == Tasks.Lyric and songData != None):
+        songData.getLyric()
     elif(target == Player.NONE):
         print("No player running")    
     elif(target == Player.MPD):
