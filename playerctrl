@@ -114,7 +114,7 @@ def printhelp():
 def parscmd(argv):
     global task, target, seekTime, songData
     try:
-        opts, args = getopt.getopt(argv, "lidhtsnmpa:P", ["help", "action=", "player=", "tmux", "sf", "sb", "seek=", "artist=", "title=", "pause"])
+        opts, args = getopt.getopt(argv, "lidhtsnmpa:PD", ["help", "action=", "player=", "tmux", "sf", "sb", "seek=", "artist=", "title=", "pause"])
     except getopt.GetoptError:
         printhelp()
         sys.exit(2)
@@ -140,6 +140,8 @@ def parscmd(argv):
             task = Tasks.VolInc
         elif opt == '-l':
             task = Tasks.Lyric
+        elif opt == '-D':
+            task = Tasks.Daemon
         elif opt in ("--pause"):
             task = Tasks.Pause
         elif opt in ("--player"):
@@ -340,44 +342,29 @@ def sendMpd(action):
 
     mpc.close()
 
-def handle_properties_changes(changed_props, invalidated_props):
-    status = ""
-    title = ""
-#    print(changed_props.items())
-    for name, value in changed_props.items():
-        if "PlaybackStatus" in name:
-            status = value
-        elif "Metadata" in name:
-            if(len(value) > 0):
-                title = getMetaData(mp)
-    if not status:
-        status = mp.player.PlaybackStatus
-
-    if not "play" in status.lower():
-        writeToFile("Pause/Stopped")
-    elif title:
-       writeToFile(title.toString())
-    else:
-        writeToFile(getMetaData(mp).toString())
-
 def runDaemon():
-    global mp
-    dbus_loop = DBusGMainLoop()
-    bus = dbus.SessionBus(mainloop=dbus_loop)
-    players_ids = list(pympris.available_players())
-    for player in players_ids:
-        mplayer = pympris.MediaPlayer(player, bus)
-        if "spoti" in mplayer.root.Identity.lower():
-            mp = mplayer
-            break
-
-    if not mp:
-        print "Spotify not found, exiting"
-        return -1
-
-    mp.player.register_properties_handler(handle_properties_changes)
-    loop = GObject.MainLoop()
-    loop.run()
+    import time
+    mpc = MPDClient()
+    mpc.timeout = 10
+    mpc.idletimeout = None
+    mpc.connect("MpdHost", 6600)
+    mpc.password("GizmoMpD")
+    current = mpc.currentsong()['file']
+    ne = ""
+    try:
+        while True:
+            if current != ne:
+                print(chr(27) + "[2J")
+                td = getMpdMetadata(mpc)
+                td.getLyric()
+                ne = current
+            else:
+                current = mpc.currentsong()['file']
+            time.sleep(5)
+    except KeyboardInterrupt:
+        mpc.close()
+        print""
+        sys.exit()
 
 def main(argv):
     global task, target, songData
