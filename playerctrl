@@ -89,16 +89,24 @@ seekTime = 0
 songData = None
 
 def printhelp():
-    print('playerctrl -a <action> [--player <player>]')
-    print('     actions: play (-P)')
-    print('              stop (-s)')
-    print('              next (-n)')
-    print('              prev (-p)')
-    print('              toggle (-t)')
-    print('              pause ')
-    print('              metadata (-m)')
-    print('              tmux (--tmux)')
-    print('              daemon (-d): Only works with spotify')
+    print('playerctrl <option> [--player <player>]')
+    print('     options: -P         play')
+    print('              -s         stop')
+    print('              -n         next')
+    print('              -p         prev')
+    print('              -t         toggle play/pause')
+    print('              -l         Fetch lyrics for current song')
+    print('              -m         get song metadata')
+    print('              -d         decrease volume')
+    print('              -i         increase volume')
+    print('              --pause ')
+    print('              --tmux     print metadata for tmux status')
+    print('              --sf       seek forward 30 sec')
+    print('              --sb       seek backwards 30 sec')
+    print('              --seek=    seek in sec, a leading "-" will seek backwards')
+    print('              --artist   set artist for direct lyric search')
+    print('              --title    set title for direct lyric search')
+    print('              -D         daemon; Only works with spotify')
     print('     player:  if player is empty the player is auto detected')
     print('              spotify')
     print('              mpd')
@@ -106,7 +114,7 @@ def printhelp():
 def parscmd(argv):
     global task, target, seekTime, songData
     try:
-        opts, args = getopt.getopt(argv, "lidhtsnmpa:P", ["help", "action=", "player=", "tmux", "sf", "sb", "seek=", "artist=", "title="])
+        opts, args = getopt.getopt(argv, "lidhtsnmpa:P", ["help", "action=", "player=", "tmux", "sf", "sb", "seek=", "artist=", "title=", "pause"])
     except getopt.GetoptError:
         printhelp()
         sys.exit(2)
@@ -132,26 +140,8 @@ def parscmd(argv):
             task = Tasks.VolInc
         elif opt == '-l':
             task = Tasks.Lyric
-        elif opt in ("-a", "--action"):
-            if(arg == 'play'):
-                task = Tasks.Play
-            elif(arg == 'stop'):
-                task = Tasks.Stop
-            elif(arg == 'next'):
-                task = Tasks.Next
-            elif(arg == 'previous'):
-                task = Tasks.Prev
-            elif(arg == 'toggle'):
-                task = Tasks.Toggle
-            elif(arg == 'pause'):
-                task = Tasks.Pause
-            elif(arg == 'metadata'):
-                task = Tasks.MetaData
-            elif(arg == 'tmux'):
-                task = Tasks.Tmux
-            else:
-                print("Unkown task")
-                printhelp()
+        elif opt in ("--pause"):
+            task = Tasks.Pause
         elif opt in ("--player"):
             if(arg == 'spotify'):
                 target = Player.Spotify
