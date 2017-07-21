@@ -6,7 +6,7 @@ success="Success"
 error="Error"
 
 if [ "0" = "$result" ] ; then
-  sbc notify $@ $success
+  sbc notify $PWD $@ $success
 else
-  sbc notifycrit $@ $error
+  sbc notifycrit $PWD $@ $error
 fi
