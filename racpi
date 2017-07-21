@@ -1,14 +1,29 @@
 #!/bin/bash
-cd ~/raccoon
-java -jar raccoon.jar -a ~/Raccoon/archives/default/ -u
+FPATH="/hdd/fdroid"
+#echo "---- Starting raccoon ----"
+#cd ~/raccoon
+#java -jar raccoon.jar -a ~/Raccoon/archives/default/ -u
 
-find ~/Raccoon/archives/default/apk_storage/ -name '*.apk' -exec cp -n {} /hdd/fdroid \;
+#find ~/Raccoon/archives/default/apk_storage/ -name '*.apk' -exec cp -n {} /hdd/fdroid \;
 
-OEFFI=$(curl -s http://oeffi.schildbach.de/download.html | grep aosp | cut -d\" -f2)
+echo "---- Check for new oeffi version ----"
+OEFFI=$(curl -s https://oeffi.schildbach.de/download.html | grep aosp | cut -d\" -f2)
 OETEST=$(echo $OEFFI | cut -d\/ -f2)
-echo $OETEST
-if [ ! -e /hdd/fdroid/$OETEST ]; then
-    wget http://oeffi.schildbach.de/$OEFFI -O /hdd/fdroid/$OETEST
+if [ ! -e $FPATH/$OETEST ]; then
+    echo "---- New version avialable $OETEST ----"
+    wget https://oeffi.schildbach.de/$OEFFI -O $FPATH/$OETEST
 fi
-    wget http://matrix.org/jenkins/job/VectorAndroidDevelop/lastStableBuild/artifact/vector/build/outputs/apk/vector-app-debug.apk -O /hdd/fdroid/vector-app-debug.apk
+#echo "---- Downloading latest riot dev build ----"
+#    wget https://matrix.org/jenkins/job/VectorAndroidDevelop/lastStableBuild/artifact/vector/build/outputs/apk/vector-app-debug.apk -O $FPATH/vector-app-debug.apk
+
+echo "---- Check Threema version ----"
+THVER=$(curl -s https://shop.threema.ch/download | grep -i version: | cut -d" " -f3 | cut -d\< -f1)
+THFILE="threema-$THVER.apk"
+if [ ! -e $FPATH/$THFILE ]; then
+    echo "---- New version avialable $THFILE ----"
+    wget 'https://shop.threema.ch/download?licenseKey=8E7EP-AU6XU&download=Download' -O $FPATH/$THFILE
+fi
+echo "---- Downloading threema Plugins ----"
+    wget https://shop.threema.ch/qrscannerplugin/qrscannerplugin-current.apk -O $FPATH/threema-qrscanner.apk
+    wget https://shop.threema.ch/voicemessageplugin/voicemessageplugin-current.apk -O $FPATH/threema-voice.apk
 
