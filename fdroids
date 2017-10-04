@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker run --rm -v /hdd/fdroid:/apk/repo -v /hdd/fdroid/config.py:/apk/config.py -v /hdd/fdroid/my.keystore:/tmp/my.keystore gotsunami/fdroid
