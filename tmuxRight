@@ -1,0 +1,30 @@
+#!/bin/bash
+
+firstNet=""
+secNet=""
+media=""
+mixer=""
+
+if [ $USER == 'gizmo' ]; then
+	firstNet=$(~/bin/mynetstat enp3s0)
+elif [[ $USER == 'swe' ]]; then
+	firstNet=$(~/bin/mynetstat enp0s25)
+elif [ $USER == 'archgizmo' ]; then
+	firstNet=$(~/bin/mynetstat eno1)
+fi 
+
+if [[ $USER == 'swe' ]]; then
+	secNet=$(~/bin/mynetstat enp5s0u2)
+fi
+
+if [ $USER == 'archgizmo' ] || [ $USER == 'gizmo' ]; then
+	media=$(~/bin/playerctrl --player mpd --tmux)
+elif [ $USER == 'swe' ]; then
+	media=$(~/bin/playerctrl --tmux)
+fi
+#if [ $USER == 'swe' ] || [ $USER == 'gizmo' ]; then
+#	mixer=$(amixer sget Master | awk -F "[][]" '/%/ { print $2 }')
+#elif [ $USER == 'archgizmo' ]; then
+#	mixer=$(amixer sget -c 1 Master | awk -F "[][]" '/%/ { print $2 }') 
+#fi
+echo "#[fg=cyan]$firstNet #[fg=cyan]$secNet #[fg=cyan]$media $mixer" 
