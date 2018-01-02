@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ ! -d ~/tmuxtmp ]; then
+	mkdir ~/tmuxtmp
+fi
+
+c=""
+w=""
+l=""
+t=""
+cmd=""
+
+c="$HOME/bin/textclock -l no"
+if [ -e $HOME/tmuxtmp/weather ]; then
+	w="cat $HOME/tmuxtmp/weather"
+fi
+l="$HOME/bin/tmux-mem-cpu-load --color -g 5"
+t="$HOME/bin/myTop"
+
+while true; do
+	if [ ! -z "$c" ]; then
+		res=$($c)
+		cmd="#[fg=green]$res"
+	fi
+	if [ ! -z "$w" ]; then
+		res=$($w)
+		cmd="$cmd #[fg=yellow]$res"
+	fi
+	if [ ! -z "$l" ]; then
+		res=$($l)
+		cmd="$cmd #[fg=cyan,bg=black,dim]$res"
+	fi
+	if [ ! -z "$t" ]; then
+		res=$($t)
+		cmd="$cmd #[fg=red]$res"
+	fi
+
+	echo "$cmd" > $HOME/tmuxtmp/tmuxLeftStatus
+	sleep 1
+done
