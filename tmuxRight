@@ -13,13 +13,11 @@ cmd=""
 if [ $USER == 'gizmo' ]; then
 	fn="$HOME/bin/mynetstat enp3s0"
 	m="$HOME/bin/playerctrl --player mpd --tmux"
-	a="/usr/bin/amixer sget Master | awk -F \"[][]\" '/%/ { print $2 }'"
 elif [ $USER == 'swe' ]; then
 	fn="$HOME/bin/mynetstat enp1s0"
 elif [ $USER == 'archgizmo' ]; then
 	fn="$HOME/bin/mynetstat eno1"
 	m="$HOME/bin/playerctrl --player mpd --tmux"
-	a="/usr/bin/amixer sget -c 1 Master | awk -F \"[][]\" '/%/ { print $2 }'"
 elif [ $USER == 'build_iukram' ]; then
 	fn="$HOME/bin/mynetstat em1"
 fi
@@ -30,15 +28,11 @@ while true; do
 		cmd="#[fg=cyan]$res"
 	fi
 	if [ ! -z "$sn" ]; then
-		res=$($fn)
+		res=$($sn)
 		cmd="$cmd #[fg=cyan]$res"
 	fi
 	if [ ! -z "$m" ]; then
-		res=$($fn)
-		cmd="$cmd #[fg=cyan]$res"
-	fi
-	if [ ! -z "$a" ]; then
-		res=$($fn)
+		res=$($m)
 		cmd="$cmd #[fg=cyan]$res"
 	fi
 
