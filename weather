@@ -1,8 +1,8 @@
 #!/bin/bash
 
-URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IKSITTER2.json"
+URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IKARLSBA24.json"
 if [ "$1" == "-g" ]; then
-        URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IWALDBRO3.json"
+        URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IWALDBRO14.json"
 fi
 
 wget -q -O- $URL | awk -F: '/\"temp_c\":|humidity\":|\"feelslike_c\":/ { printf "%s", $2 }' | awk -F, '/,/ { gsub ("\"",""); print $1"/"$3"°C "$2""}'
