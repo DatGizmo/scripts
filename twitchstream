@@ -1,0 +1,20 @@
+#!/bin/bash
+stream=$1
+
+/bin/streamlink \
+--http-header Client-ID=phiay4sq36lfv9zu7cbqwz2ndnesfd8 \
+--no-version-check \
+--player /bin/mpv \
+--player-args="--hwdec=vdpau \
+--keep-open=no \
+--title \"Twitch Stream $stream\" \
+--force-window \
+--force-seekable=yes \
+--hr-seek=yes \
+--hr-seek-framedrop=yes {filename}" \
+--twitch-oauth-token lnbxtrlo4i0jek739cz48v4q13x5rg \
+--hls-live-edge 3 \
+--hls-segment-threads 1 \
+--retry-open 1 \
+--retry-streams 1 \
+twitch.tv/$stream best

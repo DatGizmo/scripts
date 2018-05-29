@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ ! -z $1 ];then
+	chan="-channel $1"
+echo $chan
+fi
+
+cd ~/git/chatty/build/releases
+java -jar Chatty.jar \
+-single \
+-connect \
+-user xarnavaten \
+-token lnbxtrlo4i0jek739cz48v4q13x5rg \
+$chan
+ 
