@@ -12,7 +12,7 @@ stream=$1
 --force-seekable=yes \
 --hr-seek=yes \
 --hr-seek-framedrop=yes {filename}" \
---twitch-oauth-token lnbxtrlo4i0jek739cz48v4q13x5rg \
+--twitch-oauth-token 8reqjtlni40t0t5vjve2j3z81c81iw\
 --hls-live-edge 3 \
 --hls-segment-threads 1 \
 --retry-open 1 \
