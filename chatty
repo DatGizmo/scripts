@@ -8,7 +8,7 @@ cd ~/git/chatty/build/releases
 java -jar Chatty.jar \
 -single \
 -connect \
--user xarnavaten \
--token lnbxtrlo4i0jek739cz48v4q13x5rg \
+-user datgizmo \
+-token 8reqjtlni40t0t5vjve2j3z81c81iw \
 $chan
  
