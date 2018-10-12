@@ -6,13 +6,14 @@ streamlink \
 --no-version-check \
 --player mpv \
 --player-args="--hwdec=vdpau \
+--deinterlace yes \
 --keep-open=no \
 --title \"Twitch Stream $stream\" \
 --force-window \
 --force-seekable=yes \
 --hr-seek=yes \
 --hr-seek-framedrop=yes {filename}" \
---twitch-oauth-token 8reqjtlni40t0t5vjve2j3z81c81iw\
+--twitch-oauth-token 8reqjtlni40t0t5vjve2j3z81c81iw \
 --hls-live-edge 3 \
 --hls-segment-threads 1 \
 --retry-open 1 \
