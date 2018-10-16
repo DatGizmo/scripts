@@ -13,6 +13,8 @@ streamlink \
 --force-window \
 --force-seekable=yes \
 --hr-seek=yes \
+--cache-secs=5 \
+--cache=4056 \
 --hr-seek-framedrop=yes {filename}" \
 --twitch-oauth-token 8reqjtlni40t0t5vjve2j3z81c81iw \
 --hls-live-edge 3 \
