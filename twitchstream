@@ -4,6 +4,7 @@ stream=$1
 streamlink \
 --http-header Client-ID=phiay4sq36lfv9zu7cbqwz2ndnesfd8 \
 --no-version-check \
+--player-no-close \
 --player mpv \
 --player-args="--hwdec=vdpau \
 --deinterlace yes \
