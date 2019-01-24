@@ -6,7 +6,7 @@ success="Success"
 error="Error"
 
 if [ "0" = "$result" ] ; then
-  sbc notify $PWD $@ $success
+  sbc notify $success $PWD "\nbitbake" $@
 else
-  sbc notifycrit $PWD $@ $error
+  sbc notifycrit $error $PWD "\nbitbake" $@
 fi
