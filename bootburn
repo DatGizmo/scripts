@@ -1,0 +1,12 @@
+#!/bin/bash
+
+./utils/scripts/bootburn/bootburn.sh $@
+result="$?" 
+success="Success"
+error="Error"
+
+if [ "0" = "$result" ] ; then
+  sbc notify $success $PWD "\nbootburn" $@
+else
+  sbc notifycrit $error $PWD "\nbootburn" $@
+fi
