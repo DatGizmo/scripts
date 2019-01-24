@@ -1,2 +1,2 @@
 #!/bin/bash
-printenv | grep --color=never -E "(SBC|SSH)" | sort
+export | grep --color=never -E "(SBC|SSH)"
