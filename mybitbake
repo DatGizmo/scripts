@@ -2,11 +2,13 @@
 
 bitbake $@
 result="$?" 
-success="Success"
-error="Error"
+success="notify"
+error="notifycrit"
+cmd=""
 
 if [ "0" = "$result" ] ; then
-  sbc notify $success $PWD "\nbitbake" $@
+	cmd=$success
 else
-  sbc notifycrit $error $PWD "\nbitbake" $@
+	cmd=$error
 fi
+sbc $cmd $HOSTNAME $PWD "\nbitbake" $@
