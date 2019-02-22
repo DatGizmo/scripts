@@ -1,12 +1,18 @@
 #!/bin/bash
+echo $PWD
+if [[ $PWD == *"delivery_test/drive-t186ref-foundation"* ]]; then
+	./utils/scripts/bootburn/bootburn.sh $@
+	result="$?"
+	success="notifylow"
+	error="notifycrit"
 
-./utils/scripts/bootburn/bootburn.sh $@
-result="$?" 
-success="Success"
-error="Error"
-
-if [ "0" = "$result" ] ; then
-  sbc notify $success $PWD "\nbootburn" $@
+	if [ "0" = "$result" ] ; then
+		cmd=$succes
+	else
+		cmd=$error
+	fi
+	sbc $cmd $HOSTNAME $PWD "\nbootburn" $@
 else
-  sbc notifycrit $error $PWD "\nbootburn" $@
+	echo "wrong folder"
 fi
+
