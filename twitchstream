@@ -7,7 +7,10 @@ streamlink \
 --player-no-close \
 --player mpv \
 --player-args="--hwdec=vdpau \
---deinterlace yes \
+--hwdec-codecs=all \
+--hwdec-image-format=yuv420p \
+--vo=vdpau \
+--deinterlace=no \
 --keep-open=no \
 --title \"Twitch Stream $stream\" \
 --force-window \
