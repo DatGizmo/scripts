@@ -1,0 +1,2 @@
+SUBSYSTEM=="input", ACTION=="add", ATTRS{idVendor}=="feed", ATTRS{idProduct}=="1307", RUN+="/usr/bin/su swezel -c /home/swezel/bin/keyboard-add"
+SUBSYSTEM=="input", ACTION=="remove", ATTRS{idVendor}=="feed", ATTRS{idProduct}=="1307", RUN+="/usr/bin/su swezel -c /home/swezel/bin/keyboard-remove"
