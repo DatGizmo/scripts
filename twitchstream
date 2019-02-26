@@ -6,6 +6,7 @@ streamlink \
 --no-version-check \
 --player-no-close \
 --player mpv \
+--player-no-close \
 --player-args="--hwdec=vdpau \
 --hwdec-codecs=all \
 --hwdec-image-format=yuv420p \
