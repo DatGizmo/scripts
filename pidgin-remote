@@ -1,0 +1,10 @@
+#!/bin/bash
+if [ "$1" == "meeting" ]; then
+	purple-remote "setstatus?status=away&message=In a meeting"
+elif [ "$1" == "lunch" ]; then
+	purple-remote "setstatus?status=away&message=At lunch"
+elif [ "$1" == "on" ]; then
+	purple-remote "setstatus?status=available&message="
+elif [ "$1" == "off" ]; then
+	purple-remote "setstatus?status=offline&message="
+fi
