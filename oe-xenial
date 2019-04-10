@@ -1,2 +1,3 @@
 #!/bin/bash
-docker run -d --name="swe-xenial" --restart=always -p 172.16.58.104:1222:22 -v /home/swe/oe-home-swe:/oe-home -v /development:/development  -v /data:/data oe-xenial:latest
+#docker run -d --name="swe-xenial" --restart=always -p 172.16.58.104:1222:22 -v /home/swe/oe-home-swe:/oe-home -v /development:/development  -v /data:/data oe-xenial:latest
+docker run -d --name="swe-xenial" --restart=always -v /home/swezel/oe-home-swe:/oe-home -v /development:/development  -v /data:/data oe-xenial:latest
