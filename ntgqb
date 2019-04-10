@@ -1,0 +1,10 @@
+#!/bin/bash
+cd firmwares/bin/t19x
+if [ ! -h qb_cpu.bin ]; then
+	mv qb_cpu.bin qb_cpu.bin.org
+else
+	echo "qb.bin is already a symlink"
+fi
+ln -sf qb_cpu.bin.org qb_cpu.bin
+echo $PWD
+ls -al --color=always qb*
