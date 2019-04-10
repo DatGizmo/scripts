@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -n "`lsusb |grep -i 0955:7818`" ]; then
+  echo "Target is a PARKER (t186) board"
+fi
+if [ -n "`lsusb |grep -i 0955:7c18`" ]; then
+  echo "Target is a OHARA (t187) board"
+fi
+if [ -n "`lsusb |grep -i 0955:7019`" ]; then
+  echo "Target is a XAVIER 4TPC (t194) board"
+fi
+if [ -n "`lsusb |grep -i 0955:7e19`" ]; then
+  echo "Target is a XAVIER 3TPC (t194i) board"
+fi
+if [ -n "`lsusb |grep -i 0955:7100`" ]; then
+  echo "Target is a XAVIER RSU (t194i) board"
+fi
