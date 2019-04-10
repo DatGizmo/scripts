@@ -6,8 +6,8 @@ if [[ $PWD == *"delivery_test/drive-t186ref-foundation"* ]]; then
 	success="notifylow"
 	error="notifycrit"
 
-	if [ "0" = "$result" ] ; then
-		cmd=$succes
+	if [[ "0" == "$result" ]] ; then
+		cmd=$success
 	else
 		cmd=$error
 	fi
