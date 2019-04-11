@@ -1,0 +1,12 @@
+#!/bin/bash
+export TAR_SOC="t19x"
+#export TAR_SOC="t186"
+
+export QUICKBOOT_CPU_CROSS_COMPILE=${CROSS_COMPILE}
+export TEGRA_TOP=$PWD/../../
+export TARGET_SOC=${TAR_SOC}
+export ARCH=arm64
+make -j5 clean
+make -j5 native_production_defconfig
+make -j5
+
