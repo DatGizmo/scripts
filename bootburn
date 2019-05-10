@@ -1,6 +1,10 @@
 #!/bin/bash
 echo $PWD
 if [[ $PWD == *"delivery_test/drive-t186ref-foundation"* ]]; then
+	if [[ ! -e /dev/loop0 ]]; then
+		echo "Loop devices missing. Restarting the docker may fix this"
+		exit -1
+	fi
 	./utils/scripts/bootburn/bootburn.sh $@
 	result="$?"
 	success="notifylow"
