@@ -1,4 +1,5 @@
 #!/bin/bash
+cd bootloader/quickboot/qb-t18x-partner/
 export TAR_SOC="t19x"
 #export TAR_SOC="t186"
 
