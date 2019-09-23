@@ -1,2 +1,3 @@
 #!/bin/bash
 ps -eo pcpu,comm --sort=-%cpu | head -3 | tail -2 | tr '\n' ' '
+echo ''
