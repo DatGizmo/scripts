@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run -d --privileged --restart=always -v /home/swezel/oe-home-swe:/oe-home -v /development:/development -v /data:/data -v /dev/bus/usb:/dev/bus/usb  --name="ubuntu-flash" xenial-flash:latest
+docker run -d --ip="192.168.12.3" -h flash.ad.harman.com --privileged --restart=always -v /home/swezel/oe-home-swe:/oe-home -v /development:/development -v /data:/data -v /dev/bus/usb:/dev/bus/usb  --name="ubuntu-flash" xenial-flash:latest
