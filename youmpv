@@ -7,7 +7,6 @@ if [[ $stream == *"http"* ]]; then
 else
 	url=$stream
 fi
-echo $url
 
 mpv \
 --hwdec=vdpau \
