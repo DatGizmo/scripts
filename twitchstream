@@ -17,11 +17,12 @@ streamlink \
 --force-window \
 --force-seekable=yes \
 --hr-seek=yes \
---cache-secs=2 \
+--cache-secs=1 \
 --cache=4056 \
 --hr-seek-framedrop=yes {filename}" \
 --twitch-oauth-token 8reqjtlni40t0t5vjve2j3z81c81iw \
---hls-live-edge 3 \
+--hls-live-edge 1 \
+--hds-live-edge 1 \
 --hls-segment-threads 1 \
 --retry-open 1 \
 --retry-streams 1 \
