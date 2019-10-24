@@ -1,0 +1,19 @@
+#!/bin/bash
+stream=$1
+search=":"
+url=""
+url=$stream
+
+mpv \
+--hwdec=vdpau \
+--hwdec-codecs=all \
+--hwdec-image-format=yuv420p \
+--vo=vdpau \
+--deinterlace=no \
+--keep-open=no \
+--force-window \
+--force-seekable=yes \
+--hr-seek=yes \
+--cache-secs=10 \
+--cache=4056 \
+$url 
