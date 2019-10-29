@@ -1,5 +1,15 @@
 #!/bin/bash
 stream=$1
+title=""
+url=""
+
+if [[ $stream == "http"* ]]; then
+	url=$stream
+	title="Youtube live stream"
+else
+	url="twitch.tv/$stream"
+	title="Twitchstream $stream"
+fi
 
 streamlink \
 --http-header Client-ID=phiay4sq36lfv9zu7cbqwz2ndnesfd8 \
@@ -13,7 +23,7 @@ streamlink \
 --vo=vdpau \
 --deinterlace=no \
 --keep-open=no \
---title \"Twitch Stream $stream\" \
+--title \"$title\" \
 --force-window \
 --force-seekable=yes \
 --hr-seek=yes \
@@ -26,4 +36,4 @@ streamlink \
 --hls-segment-threads 1 \
 --retry-open 1 \
 --retry-streams 1 \
-twitch.tv/$stream best
+$url best

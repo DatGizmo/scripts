@@ -1,8 +1,12 @@
 #!/bin/bash
-stream=$1
+url=$1
 search=":"
-url=""
-url=$stream
+ytdlp=""
+if [[ $url == *"twitch"* ]]; then
+	ytdlp=""
+else
+	ytdlp="--ytdl"
+fi
 
 mpv \
 --hwdec=vdpau \
@@ -16,4 +20,5 @@ mpv \
 --hr-seek=yes \
 --cache-secs=10 \
 --cache=4056 \
-$url 
+$ytdlp \
+$url
