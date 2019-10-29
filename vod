@@ -21,4 +21,5 @@ mpv \
 --cache-secs=10 \
 --cache=4056 \
 $ytdlp \
+$2 \
 $url
