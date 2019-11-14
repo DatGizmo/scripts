@@ -19,7 +19,7 @@ mpv \
 --force-seekable=yes \
 --hr-seek=yes \
 --cache-secs=10 \
---cache=4056 \
+--cache=yes \
 $ytdlp \
 $2 \
 $url
