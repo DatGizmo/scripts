@@ -12,7 +12,6 @@ else
 fi
 
 streamlink \
---http-header Client-ID=phiay4sq36lfv9zu7cbqwz2ndnesfd8 \
 --no-version-check \
 --player-no-close \
 --player mpv \
@@ -28,9 +27,9 @@ streamlink \
 --force-seekable=yes \
 --hr-seek=yes \
 --cache-secs=1 \
---cache=4056 \
+--cache=yes \
 --hr-seek-framedrop=yes {filename}" \
---twitch-oauth-token 8reqjtlni40t0t5vjve2j3z81c81iw \
+--twitch-oauth-token=ts0uqmsefzrjrh04gtizfkk48bbtjg \
 --hls-live-edge 1 \
 --hds-live-edge 1 \
 --hls-segment-threads 1 \
