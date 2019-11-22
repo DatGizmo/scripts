@@ -3,12 +3,23 @@ stream=$1
 title=""
 url=""
 
-if [[ $stream == "http"* ]]; then
+function getTwitchTitle()
+{
+	stre=$1
+	search="twitch.tv/"
+	chan="${stre#*$search}"
+	echo $(curl -s -H "Authorization: Bearer ts0uqmsefzrjrh04gtizfkk48bbtjg" -X GET https://api.twitch.tv/helix/streams\?user_login=$chan | jq -r '[.data[0].user_name,.data[0].title] | @csv' |  awk -F, '/,/ { gsub ("\"",""); print $1": "$2 }')
+}
+
+if [[ $stream == *"twitch.tv"* ]]; then
+	title=$(getTwitchTitle $stream)
+	url=$stream
+elif [[ $stream == "http"* ]]; then
 	url=$stream
 	title="Live stream"
 else
 	url="twitch.tv/$stream"
-	title="Twitchstream $stream"
+	title=$(getTwitchTitle $stream)
 fi
 
 streamlink \
@@ -16,6 +27,8 @@ streamlink \
 --player-no-close \
 --player mpv \
 --player-no-close \
+--player-args="--title \"$title\" \
+{filename} " \
 --twitch-oauth-token=ts0uqmsefzrjrh04gtizfkk48bbtjg \
 --hls-live-edge 1 \
 --hds-live-edge 1 \
