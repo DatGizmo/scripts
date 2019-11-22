@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Approach for the new api, but this is very slow
+#cmd=$(curl -s -H "Authorization: Bearer ts0uqmsefzrjrh04gtizfkk48bbtjg" -X GET https://api.twitch.tv/helix/users/follows\?from_id\=142334830\&first=100)
+
+#while read -r val ;do
+#	list=$(curl -s -H "Authorization: Bearer ts0uqmsefzrjrh04gtizfkk48bbtjg" -X GET https://api.twitch.tv/helix/streams\?user_id=$val)
+#	while read -r stream;do
+#		echo $stream
+#	done < <(echo $list | jq -rc '.data[].user_name,.data[].title')
+#done < <(echo $cmd | jq -rc '.data[].to_id' )
+
+# v5 api, soon to be deprecated.
+request=$(curl -s -H "Authorization: OAuth ts0uqmsefzrjrh04gtizfkk48bbtjg" https://api.twitch.tv/kraken/streams/followed) 
+
+echo $request | jq -rc '.streams[] | "\(.channel.display_name):\n \(.channel.status)\n \(.channel.game)"'
+
+
