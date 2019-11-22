@@ -1,7 +1,11 @@
 #!/bin/bash
 if [ ! -z $1 ];then
-	chan="-channel $1"
-echo $chan
+	if [[ $1 == "http"* ]];then
+		search="twitch.tv/"
+		chan="-channel ${1#*$search}"
+	else
+		chan="-channel $1"
+	fi
 fi
 
 cd ~/git/chatty/build/releases
