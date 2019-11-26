@@ -1,0 +1,2 @@
+#!/bin/bash
+find /tmp/mpvsocket* -exec sh -c "echo 'cycle pause' | socat - {}" \;
