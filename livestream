@@ -29,8 +29,7 @@ streamlink \
 --player-args="--title \"$title\" \
 {filename} " \
 --twitch-oauth-token=ts0uqmsefzrjrh04gtizfkk48bbtjg \
---hls-live-edge 1 \
---hds-live-edge 1 \
+--hls-live-edge 3 \
 --hls-segment-threads 1 \
 --retry-open 1 \
 --retry-streams 1 \
