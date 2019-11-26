@@ -24,7 +24,6 @@ fi
 
 streamlink \
 --no-version-check \
---player-no-close \
 --player mpv \
 --player-no-close \
 --player-args="--title \"$title\" \
@@ -35,4 +34,5 @@ streamlink \
 --hls-segment-threads 1 \
 --retry-open 1 \
 --retry-streams 1 \
+--retry-max 10 \
 $url best
