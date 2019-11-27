@@ -13,6 +13,17 @@
 # v5 api, soon to be deprecated.
 request=$(curl -s -H "Authorization: OAuth ts0uqmsefzrjrh04gtizfkk48bbtjg" https://api.twitch.tv/kraken/streams/followed) 
 
+#i=$(( 0 + 0 ))
+#while true; do
+#	name=$(echo $request | jq -rc ".streams[$i].channel.display_name")
+#	if [[ "null" == "$name" ]]; then
+#		break
+#	fi
+#	stat=$(echo $request | jq -rc ".streams[$i].channel.status")
+#	game=$(echo $request | jq -rc ".streams[$i].channel.game")
+#	i=$(( i + 1 ))
+#	printf "%s\n %s\n %s\n" "$name" "$stat" "$game"
+#done	
 echo $request | jq -rc '.streams[] | "\(.channel.display_name):\n \(.channel.status)\n \(.channel.game)"'
 
 
