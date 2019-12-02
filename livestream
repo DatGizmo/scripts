@@ -2,12 +2,19 @@
 stream=$1
 title=""
 url=""
+#name=""
 
-function getTwitchTitle()
+function getTwitchUsername()
 {
 	stre=$1
 	search="twitch.tv/"
 	chan="${stre#*$search}"
+	echo $chan
+}
+
+function getTwitchTitle()
+{
+	chan=$(getTwitchUsername $1)
 	echo $(curl -s -H "Authorization: Bearer ts0uqmsefzrjrh04gtizfkk48bbtjg" -X GET https://api.twitch.tv/helix/streams\?user_login=$chan | jq -r '[.data[0].user_name,.data[0].title] | @csv' |  awk -F, '/,/ { gsub ("\"",""); print $1": "$2 }')
 }
 
@@ -20,6 +27,16 @@ elif [[ $stream == "http"* ]]; then
 else
 	url="twitch.tv/$stream"
 	title=$(getTwitchTitle $stream)
+fi
+
+echo "tit: $title"
+if [[ $# -gt 1 ]]; then
+	echo "Starting chatty"
+	if [[ "$2" == -c ]]; then
+		name=$(getTwitchUsername $1)
+		echo "name=" $name
+		chatty $name &
+	fi
 fi
 
 streamlink \
