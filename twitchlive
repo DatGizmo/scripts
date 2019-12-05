@@ -30,11 +30,10 @@ then
 	read inp
 	if [[ "$inp" =~ ^[0-9]+$ ]]
 	then
-		echo "Len: ${#tt[@]}; inp: $inp"
 		if [[ ${#tt[@]} -gt $inp ]]
 		then
 			readarray -d '\' -t tc < <(echo ${tt[$inp]})
-			livestream ${tc[1]} $2 >> /dev/null 2>&1 &
+			livestream ${tc[1]} $2 -q &
 		fi
 	fi
 fi
