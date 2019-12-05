@@ -13,17 +13,28 @@
 # v5 api, soon to be deprecated.
 request=$(curl -s -H "Authorization: OAuth ts0uqmsefzrjrh04gtizfkk48bbtjg" https://api.twitch.tv/kraken/streams/followed) 
 
-#i=$(( 0 + 0 ))
-#while true; do
-#	name=$(echo $request | jq -rc ".streams[$i].channel.display_name")
-#	if [[ "null" == "$name" ]]; then
-#		break
-#	fi
-#	stat=$(echo $request | jq -rc ".streams[$i].channel.status")
-#	game=$(echo $request | jq -rc ".streams[$i].channel.game")
-#	i=$(( i + 1 ))
-#	printf "%s\n %s\n %s\n" "$name" "$stat" "$game"
-#done	
-echo $request | jq -rc '.streams[] | "\(.channel.display_name):\n \(.channel.status)\n \(.channel.game)"'
+readarray -t tt < <(echo $request | jq -rc '.streams | to_entries | .[] | "[\(.key)]\\ \(.value.channel.display_name)\\ \(.value.channel.status)\\ \(.value.channel.game)\\"')
 
+for i in "${tt[@]}"
+do
+	readarray -d '\' -t tc < <(echo $i)
+	echo -e "\e[32m${tc[0]}${tc[1]}:"
+	echo -e "\e[33m    ${tc[2]}"
+	echo -e "\e[31m    ${tc[3]}"
+done
 
+if [[ "$1" == "-l" ]]
+then
+	echo -e "\e[0m"
+	echo -n "Select stream to launch: "
+	read inp
+	if [[ "$inp" =~ ^[0-9]+$ ]]
+	then
+		echo "Len: ${#tt[@]}; inp: $inp"
+		if [[ ${#tt[@]} -gt $inp ]]
+		then
+			readarray -d '\' -t tc < <(echo ${tt[$inp]})
+			livestream ${tc[1]} $2 >> /dev/null 2>&1 &
+		fi
+	fi
+fi
