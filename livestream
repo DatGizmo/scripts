@@ -29,13 +29,12 @@ else
 	title=$(getTwitchTitle $stream)
 fi
 
-echo "tit: $title"
 if [[ $# -gt 1 ]]; then
 	echo "Starting chatty"
 	if [[ "$2" == -c ]]; then
 		name=$(getTwitchUsername $1)
 		echo "name=" $name
-		chatty $name &
+		chatty $name >> /dev/null 2>&1 &
 	fi
 fi
 
@@ -51,4 +50,5 @@ streamlink \
 --retry-open 1 \
 --retry-streams 1 \
 --retry-max 10 \
+-Q \
 $url best
