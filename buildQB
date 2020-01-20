@@ -1,35 +1,53 @@
 #!/bin/bash
 
-function build()
+function clean()
 {
-	echo "Building for $TAR_SOC"
+	echo "Cleaning $TAR_SOC"
 	export QUICKBOOT_CPU_CROSS_COMPILE=${CROSS_COMPILE}
 	export TEGRA_TOP=$PWD/../../
 	export TARGET_SOC=${TAR_SOC}
 	export ARCH=arm64
 	make -j5 clean
-	make -j5 native_production_defconfig
-	make -j5
-
 }
 
-cd bootloader/quickboot/qb-t18x-partner/
+function build()
+{
+	clean
+	if [[ "FALSE" == "$1" ]]; then
+		echo "Building $TAR_SOC"
+		make -j5 native_production_defconfig
+		make -j5
+	fi
+}
+
+if [[ $CC != *"aarch64-gnu-linux-gcc"* ]]; then
+	echo "Sourcing ntg7 sdk"
+	source /data/sdk/ntg/environment-setup-aarch64-gnu-linux
+	echo "CC = $CC"
+fi
+
 tar=$1
+clronly="FALSE"
+cd bootloader/quickboot/qb-t18x-partner/
 if [[ -z "$1" ]]; then
 	tar=t19x
 fi
 
+if [[ "clean" == "$2" ]]; then
+	clronly="TRUE"
+fi
+
 if [[ "t19x" == "$tar" ]]; then
 	export TAR_SOC="t19x"
-	build
+	build $clronly
 elif [[ "t18x" == "$tar" ]]; then
 	export TAR_SOC="t186"
-	build
+	build $clronly
 elif [[ "all" == "$tar" ]]; then
 	export TAR_SOC="t19x"
-	build
+	build $clronly
 	export TAR_SOC="t186"
-	build
+	build $clronly
 else
 	echo "None supported target given!"
 	echo "Only \"t19x\", \"t18x\" and \"all\" are supported."
