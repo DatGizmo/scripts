@@ -1,13 +1,38 @@
 #!/bin/bash
-cd bootloader/quickboot/qb-t18x-partner/
-export TAR_SOC="t19x"
-#export TAR_SOC="t186"
 
-export QUICKBOOT_CPU_CROSS_COMPILE=${CROSS_COMPILE}
-export TEGRA_TOP=$PWD/../../
-export TARGET_SOC=${TAR_SOC}
-export ARCH=arm64
-make -j5 clean
-make -j5 native_production_defconfig
-make -j5
+function build()
+{
+	echo "Building for $TAR_SOC"
+	export QUICKBOOT_CPU_CROSS_COMPILE=${CROSS_COMPILE}
+	export TEGRA_TOP=$PWD/../../
+	export TARGET_SOC=${TAR_SOC}
+	export ARCH=arm64
+	make -j5 clean
+	make -j5 native_production_defconfig
+	make -j5
+
+}
+
+cd bootloader/quickboot/qb-t18x-partner/
+tar=$1
+if [[ -z "$1" ]]; then
+	tar=t19x
+fi
+
+if [[ "t19x" == "$tar" ]]; then
+	export TAR_SOC="t19x"
+	build
+elif [[ "t18x" == "$tar" ]]; then
+	export TAR_SOC="t186"
+	build
+elif [[ "all" == "$tar" ]]; then
+	export TAR_SOC="t19x"
+	build
+	export TAR_SOC="t186"
+	build
+else
+	echo "None supported target given!"
+	echo "Only \"t19x\", \"t18x\" and \"all\" are supported."
+	exit -1
+fi
 
