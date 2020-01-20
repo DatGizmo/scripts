@@ -1,23 +1,37 @@
 #!/bin/bash
 
-function clean()
+function init()
 {
-	echo "Cleaning $TAR_SOC"
+	tar=$1
+	echo "Target: $tar"
+	if [[ "t19x" == "$tar" ]]; then
+		export TAR_SOC="t19x"
+	elif [[ "t18x" == "$tar" ]]; then
+		export TAR_SOC="t186"
+	else
+		echo "None supported target given!"
+		echo "Only \"t19x\" and \"t18x\" are supported."
+		exit -1
+	fi
 	export QUICKBOOT_CPU_CROSS_COMPILE=${CROSS_COMPILE}
 	export TEGRA_TOP=$PWD/../../
 	export TARGET_SOC=${TAR_SOC}
 	export ARCH=arm64
+}
+
+function clean()
+{
+	init $1
+	echo "Cleaning $TAR_SOC"
 	make -j5 clean
 }
 
 function build()
 {
-	clean
-	if [[ "FALSE" == "$1" ]]; then
-		echo "Building $TAR_SOC"
-		make -j5 native_production_defconfig
-		make -j5
-	fi
+	init $1
+	echo "Building $TAR_SOC"
+	make -j5 native_production_defconfig
+	make -j5
 }
 
 if [[ $CC != *"aarch64-gnu-linux-gcc"* ]]; then
@@ -27,30 +41,29 @@ if [[ $CC != *"aarch64-gnu-linux-gcc"* ]]; then
 fi
 
 tar=$1
-clronly="FALSE"
+clr="FALSE"
 cd bootloader/quickboot/qb-t18x-partner/
 if [[ -z "$1" ]]; then
 	tar=t19x
 fi
 
 if [[ "clean" == "$2" ]]; then
-	clronly="TRUE"
+	clr="TRUE"
 fi
 
-if [[ "t19x" == "$tar" ]]; then
-	export TAR_SOC="t19x"
-	build $clronly
-elif [[ "t18x" == "$tar" ]]; then
-	export TAR_SOC="t186"
-	build $clronly
-elif [[ "all" == "$tar" ]]; then
-	export TAR_SOC="t19x"
-	build $clronly
-	export TAR_SOC="t186"
-	build $clronly
+if [[ "all" == "$tar" ]]; then
+	if [[ "TRUE" == "$clr" ]]; then
+		clean "t19x"
+		clean "t18x"
+	else
+		build "t19x"
+		build "t18x"
+	fi
 else
-	echo "None supported target given!"
-	echo "Only \"t19x\", \"t18x\" and \"all\" are supported."
-	exit -1
+	if [[ "TRUE" == "$clr" ]]; then
+		clean $tar
+	else
+		build $tar
+	fi
 fi
 
