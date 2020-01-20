@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if [[ $PWD == *"delivery_test/drive-t186ref-foundation"* ]]; then
+	
+	tar=$1
+	tarpath=""
+	srcpath=""
+	undo="FALSE"
+	if [[ -z "$tar" ]]; then
+		tar="t19x"
+	fi
+
+	if [[ "t19x" == $tar ]]; then
+		tarpath=firmwares/bin/t19x
+		srcpath=/data/stash/ccsrtf/drive5_qb/bootloader/quickboot/qb-t18x-partner/_out/t19x/images/qb_cpu.bin
+	elif [[ "t18x" == $tar ]]; then
+		tarpath=firmwares/bin/t186
+		srcpath=/data/stash/ccsrtf/drive5_qb/bootloader/quickboot/qb-t18x-partner/_out/t186/images/qb_cpu.bin
+	else
+		echo "Not supported target given!"
+		echo "Only \"t19x\" and \"t18x\" are supported."
+		exit -1
+	fi
+
+	if [[ "undo" == $2 ]]; then
+		undo="TRUE"	
+		echo "Removing symlink"
+	else
+		echo "Copy qb.bin from $srcpath to $tarpath"
+	fi
+
+	cd $tarpath
+	if [[ "TRUE" == "$undo" ]]; then
+		if [ -h qb_cpu.bin ]; then
+			rm qb_cpu.bin
+			rm qb_cpu.bin.rsu
+			mv qb_cpu.bin.org qb_cpu.bin
+		else
+			echo "qb.bin is not a symlink nothing to do"
+		fi
+	else
+		if [ ! -h qb_cpu.bin ]; then
+			mv qb_cpu.bin qb_cpu.bin.org
+		else
+			echo "qb.bin is already a symlink"
+		fi
+		if [ ! -e qb_cpu.bin.rsu ]; then
+			cp $srcpath qb_cpu.bin.rsu
+		else
+			echo "File already copied"
+		fi
+		ln -sf qb_cpu.bin.rsu qb_cpu.bin
+	fi
+	echo $PWD
+	ls -al --color=always qb*
+
+else
+	echo "Wrong folder! You should be in t19x_/t18x_delivery_test/drive-t186ref-foundation"
+fi
+
