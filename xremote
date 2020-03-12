@@ -1,0 +1,7 @@
+#!/bin/bash
+netw=$1
+if [[ -z "$1" ]]; then
+	netw="hikan65428"
+fi
+echo $netw
+xfreerdp /u:SWezel /size:1920x1075 /v:$netw +clipboard /sound:sys:pulse -grab-keyboard
