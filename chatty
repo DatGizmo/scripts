@@ -8,8 +8,7 @@ if [ ! -z $1 ];then
 	fi
 fi
 
-cd ~/git/chatty/build/releases
-java -jar Chatty.jar \
+/usr/bin/chatty \
 -single \
 -connect \
 -user datgizmo \
