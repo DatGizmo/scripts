@@ -4,4 +4,4 @@ if [[ -z "$1" ]]; then
 	netw="hikan65428"
 fi
 echo $netw
-xfreerdp /u:SWezel /size:1920x1075 /v:$netw +clipboard /sound:sys:pulse -grab-keyboard
+xfreerdp /u:SWezel /p:H4rm4nGr3ml1n7 /size:1280x1010 /v:$netw +clipboard /sound:sys:pulse,quality:high /microphone:sys:pulse,quality:high -grab-keyboard /compression-level:0 /network:lan /audio-mode:1
