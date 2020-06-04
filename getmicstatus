@@ -1,0 +1,9 @@
+#!/bin/bash
+st=$(/usr/bin/amixer sget Capture | awk -F "[][]" '/%/ { print $4 }')
+
+if [[ "$st" == "off" ]]
+then
+	echo "MUTED"
+else
+	echo "on"
+fi
