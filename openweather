@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL='http://api.openweathermap.org/data/2.5/weather?q=Ullern,no&appid=768b5b2a22c47ba2b0902eb45644ee3d&units=metric'
+URL='http://api.openweathermap.org/data/2.5/weather?q=Ullern&appid=768b5b2a22c47ba2b0902eb45644ee3d&units=metric'
 
 wget -q -O- $URL | jq -r '[.main.temp,.main.humidity,.weather[0].main] | @csv' | awk -F, '/,/ { gsub ("\"",""); print $1"°C "$2"% "$3""}'
 
