@@ -1,7 +1,8 @@
 #!/bin/bash
-st=$(/usr/bin/amixer sget Capture | awk -F "[][]" '/%/ { print $4 }')
+sink=$(pulsemixer --list-sources | grep -i "default" | awk -F" " '{ b=$3; gsub(",", "", b); print b }')
 
-if [[ "$st" == "off" ]]
+st=$(pulsemixer --id $sink --get-mute)
+if [[ "$st" == "1" ]]
 then
 	echo "MUTED"
 else
