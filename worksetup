@@ -1,0 +1,21 @@
+#!/bin/bash
+xrandr | grep ^HDMI-2 | grep disconnectede -q
+ret="$?"
+if [[ "$ret" == "0" ]];
+then
+	echo "At the office"
+	xrandr --output DVI-I-1-1 --mode 1920x1080 --left-of eDP-1
+	xrandr --output DVI-I-2-2 --mode 1920x1200 --left-of DVI-I-1-1
+
+	feh --bg-max \
+		~/Wallpaper/DSCF2594.JPG \
+		~/Wallpaper/DSCF2740.JPG \
+		~/Wallpaper/IMG_20170915_125507.jpg 
+else
+	echo "At the home"
+	xrandr --output HDMI-2 --mode 1920x1080 --left-of eDP-1
+
+	feh --bg-max \
+	~/Wallpaper/DSCF2740.JPG \
+	~/Wallpaper/DSCF2594.JPG
+fi
