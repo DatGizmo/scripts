@@ -1,0 +1,8 @@
+#!/bin/bash
+sinks=$(pulsemixer --list-sources | grep -vi "Monitor" | awk -F" " '{ b=$3; gsub(",", "", b); print b }')
+
+for s in $sinks;
+do
+	pulsemixer --id $s --toggle-mute
+done
+
