@@ -1,5 +1,5 @@
 #!/bin/bash
-xrandr | grep ^HDMI-2 | grep disconnectede -q
+xrandr | grep ^HDMI-2 | grep disconnected -q
 ret="$?"
 if [[ "$ret" == "0" ]];
 then
