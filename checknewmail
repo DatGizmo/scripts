@@ -1,0 +1,11 @@
+#!/bin/bash
+
+count=$(find $HOME/.mutt/mailbox/nordic/INBOX/new -type f | wc -l)
+
+if [[ "0" < "$count" ]]
+then
+	notify-send "Mail:" "$count new mail(s) in Inbox"
+	echo "$count"
+else
+	echo "0"
+fi
