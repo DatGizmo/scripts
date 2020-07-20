@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Start imapfilter"
+pw=$(grep PASSWORD ~/.config/cifs/cifs | cut -d "=" -f 2)
+{ sleep .1; echo $pw; } | script -f -q -c 'imapfilter -v -l ~/.imapfilter/logfile'
+echo "Imapfilter finished"
