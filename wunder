@@ -1,9 +1,6 @@
 #!/bin/bash
 
-URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IKARLSBA24.json"
-if [ "$1" == "-g" ]; then
-        URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IWALDBRO14.json"
-fi
+URL="http://api.wunderground.com/api/6d09d0c4b5449254/conditions/q/pws:IOSLO1885.json"
 
 wget -q -O- $URL | jq .current_observation | jq -r '[.temp_c,.feelslike_c,.relative_humidity,.weather] | @csv' |awk -F, '/,/ { gsub ("\"",""); print $1"/"$2"°C "$3" "$4""}' 
 
