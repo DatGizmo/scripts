@@ -1,0 +1,13 @@
+#!/bin/bash
+
+p="$HOME/.abook/addressbook"
+
+[ ! -d $HOME/.abook ] && mkdir $HOME/.abook
+[ -a $p ] && cp $p $p".bkp"
+
+echo -e "# abook addressbook file \n" > $p
+echo "[format]" >> $p
+echo "programm=abook" >> $p
+echo -e "version=0.6.1\n" >> $p
+
+mcds -q e "@" -s n | sort | awk -F"\t" '{ printf "[%d]\nname=%s\nemail=%s\n", NR-1, $1, $2 }' >> $p
