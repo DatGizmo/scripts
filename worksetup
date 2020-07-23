@@ -6,6 +6,7 @@ then
 	echo "At the office"
 	xrandr --output DVI-I-1-1 --mode 1920x1080 --left-of eDP-1
 	xrandr --output DVI-I-2-2 --mode 1920x1200 --left-of DVI-I-1-1
+	xrandr --output eDP-1 --scale .84x.84
 
 	feh --bg-max \
 		~/Wallpaper/DSCF2594.JPG \
