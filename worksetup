@@ -11,12 +11,13 @@ then
 	feh --bg-max \
 		~/Wallpaper/DSCF2594.JPG \
 		~/Wallpaper/DSCF2740.JPG \
-		~/Wallpaper/IMG_20170915_125507.jpg 
+		~/Wallpaper/IMG_20170915_125507.jpg
 else
 	echo "At the home"
 	xrandr --output HDMI-2 --mode 1920x1080 --left-of eDP-1
+	xrandr --output eDP-1 --scale .84x.84
 
 	feh --bg-max \
-	~/Wallpaper/DSCF2740.JPG \
-	~/Wallpaper/DSCF2594.JPG
+	~/Wallpaper/DSCF2594.JPG \
+	~/Wallpaper/DSCF2740.JPG
 fi
