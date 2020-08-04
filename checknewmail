@@ -1,9 +1,9 @@
 #!/bin/bash
 
-path="$HOME/.mutt/mailbox/nordic"
+path="$HOME/Mail/nordic"
 
-totalcount=$(find $path/*/new -type f | wc -l)
-folders=$(find $path/*/new -type d | cut -d '/' -f 7)
+totalcount=$(find $path/*/new -type f | grep -v system | wc -l)
+folders=$(find $path/*/new -type d | grep -v system | cut -d '/' -f 6)
 msg=""
 
 for f in $folders
