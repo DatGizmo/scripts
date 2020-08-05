@@ -6,19 +6,20 @@ FPATH="/hdd/fdroid"
 
 #find ~/Raccoon/archives/default/apk_storage/ -name '*.apk' -exec cp -n {} /hdd/fdroid \;
 
-echo "---- Check for new oeffi version ----"
-OEFFI=$(curl -s https://oeffi.schildbach.de/download.html | grep aosp | cut -d\" -f2)
-OETEST=$(echo $OEFFI | cut -d\/ -f2)
-if [ ! -e $FPATH/$OETEST ]; then
-    echo "---- New version avialable $OETEST ----"
-    wget https://oeffi.schildbach.de/$OEFFI -O $FPATH/$OETEST
-fi
+#echo "---- Check for new oeffi version ----"
+#OEFFI=$(curl -s https://oeffi.schildbach.de/download.html | grep aosp | cut -d\" -f2)
+#OETEST=$(echo $OEFFI | cut -d\/ -f2)
+#if [ ! -e $FPATH/$OETEST ]; then
+#    echo "---- New version avialable $OETEST ----"
+#    wget https://oeffi.schildbach.de/$OEFFI -O $FPATH/$OETEST
+#fi
 #echo "---- Downloading latest riot dev build ----"
 #    wget https://matrix.org/jenkins/job/VectorAndroidDevelop/lastStableBuild/artifact/vector/build/outputs/apk/vector-app-debug.apk -O $FPATH/vector-app-debug.apk
 
 echo "---- Check Threema version ----"
 THVER=$(curl -s https://shop.threema.ch/download | grep -i version: | cut -d" " -f3 | cut -d\< -f1)
 THFILE="threema-$THVER.apk"
+echo "Threema: $THVER/$THFILE"
 if [ ! -e $FPATH/$THFILE ]; then
     echo "---- New version avialable $THFILE ----"
     wget 'https://shop.threema.ch/download?licenseKey=8E7EP-AU6XU&download=Download' -O $FPATH/$THFILE
