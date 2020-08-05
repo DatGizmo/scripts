@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function caldiff()
+{
+    n=$(date +%s)
+    s=$(date --date "$1" +%s)
+    diff=$(( s-n ))
+    d=$(date --date "1970-01-01 $diff sec" "+%M")
+    echo $d
+}
+
+events=$(khal list --notstarted now 15m --format "{start-time}|{title}" --day-format "")
+
+if [[ $events == *"No events"* ]]
+then
+    echo "no e."
+else
+    IFS='|'
+    d=""
+    first=""
+    for f in $events;
+    do
+        if [[ $first == "" ]]
+        then
+            d=$f
+            first="done"
+        else
+            s=$(caldiff $d)
+            if [[ $s > 60 ]]
+            then
+                echo "E. in: ${s}m"
+                notify-send "Event in: ${s}m" "$f" 
+            else
+                echo "E. NOW"
+                notify-send "Event NOW" "$f" 
+            fi
+        fi
+    done
+fi
