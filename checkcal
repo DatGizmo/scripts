@@ -3,8 +3,7 @@
 function caldiff()
 {
     n=$(date +%s)
-    s=$(date --date "$1" +%s)
-    diff=$(( s-n ))
+    diff=$(( $1-n ))
     d=$(date --date "1970-01-01 $diff sec" "+%M")
     echo $d
 }
@@ -25,11 +24,12 @@ else
             d=$f
             first="done"
         else
-            s=$(caldiff $d)
-            if [[ $s > 60 ]]
+            s=$(date --date "$d" +%s)
+            time=$(caldiff $s)
+            if [[ "$time" > "02" ]]
             then
-                echo "E. in: ${s}m"
-                notify-send "Event in: ${s}m" "$f" 
+                echo "E. in: ${time}m"
+                notify-send "Event in: ${time}m" "$f"
             else
                 echo "E. NOW"
                 notify-send "Event NOW" "$f" 
@@ -37,3 +37,26 @@ else
         fi
     done
 fi
+
+tasks=$(todo --porcelain list --due 1 | jq -rM '.[] | [.due, .summary] | @tsv')
+IFS=$'\n'
+
+for t in $tasks;
+do
+    IFS=$'\t'
+    first=""
+    time=""
+    due=""
+    for e in $t;
+    do
+        if [[ $first == "" ]]
+        then
+            due=$(date --date "1970-01-01 $e sec" "+%H:%M")
+            time=$(caldiff $e)
+            [[ "$time" > "15" ]] && break
+            first="done"
+        else
+           notify-send "Task in: ${time}m" "$due $e"
+        fi
+    done
+done
