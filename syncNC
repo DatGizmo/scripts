@@ -1,6 +1,11 @@
 #!/bin/bash
+
+verbose="-s"
+
+[[ "$1" == "-v" ]] && verbose=""
+
 user="gizmo"
 pw=$(~/bin/get-pw nc-sync)
-nextcloudcmd -u $user -p $pw ~/Documents/LyricsMaster https://oc.datgizmo.de/remote.php/webdav/Lyrics
-nextcloudcmd -u $user -p $pw ~/NC/Notes/ https://oc.datgizmo.de/remote.php/webdav/Notes
-nextcloudcmd -u $user -p $pw ~/.local/share/ytcc/ https://oc.datgizmo.de/remote.php/webdav/ytcc
+nextcloudcmd $verbose -u $user -p $pw ~/Documents/LyricsMaster https://oc.datgizmo.de/remote.php/webdav/Lyrics
+nextcloudcmd $verbose -u $user -p $pw ~/NC/Notes/ https://oc.datgizmo.de/remote.php/webdav/Notes
+nextcloudcmd $verbose -u $user -p $pw ~/.local/share/ytcc/ https://oc.datgizmo.de/remote.php/webdav/ytcc
