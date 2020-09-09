@@ -6,6 +6,9 @@ verbose="-s"
 
 user="gizmo"
 pw=$(~/bin/get-pw nc-sync)
+echo "Syncing lyrics"
 nextcloudcmd $verbose -u $user -p $pw ~/Documents/LyricsMaster https://oc.datgizmo.de/remote.php/webdav/Lyrics
+echo "Syncing Notes"
 nextcloudcmd $verbose -u $user -p $pw ~/NC/Notes/ https://oc.datgizmo.de/remote.php/webdav/Notes
+echo "Syncing ytcc db"
 nextcloudcmd $verbose -u $user -p $pw ~/.local/share/ytcc/ https://oc.datgizmo.de/remote.php/webdav/ytcc
