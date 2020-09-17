@@ -1,0 +1,2 @@
+#!/bin/bash
+openconnect --protocol=gp -u sebastian.wezel@nordicsemi.no vpn.nordicsemi.no --servercert pin-sha256:PsSesU2hFSBIm8XpQvzamNwpz/JiziJMudgrt9xfOs8=
