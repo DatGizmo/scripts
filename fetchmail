@@ -1,6 +1,5 @@
 #!/bin/bash
 
-[[ -e /usr/bin/imapfilter ]] && /usr/bin/imapfilter -v
 /usr/bin/mbsync -Va
 /usr/bin/notmuch new
 /usr/bin/vdirsyncer sync
