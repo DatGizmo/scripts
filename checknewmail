@@ -1,24 +1,21 @@
 #!/bin/bash
 
-path="$HOME/Mail/nordic"
-
-totalcount=$(find $path/*/new -type f | grep -v system | wc -l)
-folders=$(find $path/*/new -type d | grep -v system | cut -d '/' -f 6)
-msg=""
-
-for f in $folders
-do
-	c=$(find $path/$f/new -type f | wc -l)
-	if [[ "0" < "$c" ]]
-	then
-		msg="${msg}$c mail(s) in $f\n"
-	fi
-done
+taglist="Bitbucket HR IT Jira inbox"
+totalcount=$(notmuch count tag:unread)
 
 if [[ "0" < "$totalcount" ]]
 then
-	notify-send "Mail:" "$totalcount new mail(s) in total\n$msg"
-	echo "$totalcount"
+    for t in $taglist
+    do
+        c=$(notmuch count tag:unread and tag:$t)
+        if [[ "0" < "$c" ]]
+        then
+            msg="${msg}$c mail(s) in $t\n"
+        fi
+    done
+
+    notify-send "Mail:" "$totalcount new mail(s) in total\n$msg"
+    echo "$totalcount"
 else
-	echo "0"
+    echo "0"
 fi
