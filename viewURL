@@ -1,0 +1,4 @@
+#!/bin/bash
+xclip -i <<< $1
+[[ "0" == "$?" ]] && exit
+lynx $1
