@@ -1,6 +1,6 @@
 #!/bin/bash
 
-taglist="Bitbucket HR IT Jira inbox"
+taglist="Bitbucket HR IT Jira Jenkins inbox"
 totalcount=$(notmuch count tag:unread)
 
 if [[ "0" < "$totalcount" ]]
@@ -11,11 +11,12 @@ then
         if [[ "0" < "$c" ]]
         then
             msg="${msg}$c mail(s) in $t\n"
+            cc="${cc}$c($t)"
         fi
     done
 
     notify-send "Mail:" "$totalcount new mail(s) in total\n$msg"
-    echo "$totalcount"
+    echo "$totalcount $cc"
 else
     echo "0"
 fi
