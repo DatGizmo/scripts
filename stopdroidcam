@@ -1,0 +1,10 @@
+#!/bin/bash
+adb shell am force-stop com.dev47apps.droidcamx
+adb shell dumpsys power | grep -q "Display Power: state=ON"
+res=$?
+if [[ "0" == "$res" ]]
+then
+	adb shell input keyevent KEYCODE_POWER
+fi
+adb kill-server
+
