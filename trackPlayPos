@@ -1,0 +1,17 @@
+#!/bin/bash
+
+titReg='^([?[:alnum:][:space:].-]*)'
+posReg='([[:digit:]]{1,3}:[[:digit:]]{1,2})/'
+
+ret=$(mpc)
+if [[ $ret =~ $titReg ]];
+then
+    tit=${BASH_REMATCH[1]}
+fi
+
+if [[ $ret =~ $posReg ]];
+then
+    time=${BASH_REMATCH[1]}
+fi
+
+echo $tit $time > ~/tmp/mpdpos
