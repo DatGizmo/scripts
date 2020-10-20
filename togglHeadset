@@ -1,0 +1,77 @@
+#!/bin/bash
+
+blReg='^.*bluez_sink\.([[:alnum:]_]*)\.([[:alnum:]_]*)'
+
+list=$(pactl info)
+
+blzId=""
+mode=""
+if [[ $list =~ $blReg ]];
+then
+    blzId=${BASH_REMATCH[1]}
+    mode=${BASH_REMATCH[2]}
+fi
+
+newMode=""
+[[ "a2dp_sink" == "$mode" ]] && newMode="headset_head_unit"
+[[ "headset_head_unit" == "$mode" ]] && newMode="a2dp_sink"
+
+pactl set-card-profile bluez_card.$blzId $newMode
+inReg='^Sink Input #([[:digit:]]*)'
+inNameReg='application.name = "(.*)"'
+stream=$(pactl list sink-inputs)
+IFS=$'\n'
+inId=""
+inName=""
+for s in $stream
+do
+    if [[ $s =~ $inReg ]]
+    then
+        inId=${BASH_REMATCH[1]}
+    elif [[ $s =~ $inNameReg ]]
+    then
+        inName=${BASH_REMATCH[1]}
+    fi
+
+    if [[ "$inName" == "Skype" ]]
+    then
+        inName=""
+        break
+    fi
+done
+
+outReg='^Source Output #([[:digit:]]*)'
+outNameReg='application.name = "(.*)"'
+outName=''
+outId=''
+stream=$(pactl list source-outputs)
+for s in $stream
+do
+    if [[ $s =~ $outReg ]]
+    then
+        outId=${BASH_REMATCH[1]}
+    elif [[ $s =~ $outNameReg ]]
+    then
+        outName=${BASH_REMATCH[1]}
+    fi
+
+    if [[ "$outName" == "Skype" ]]
+    then
+        outName=""
+        break
+    fi
+done
+
+# The mode var still holds the previous mode
+if [[ "headset_head_unit" == "$mode" ]]
+then
+    echo "Move mic to jabara"
+    pactl move-source-output $outId alsa_input.usb-GN_Netcom_A_S_Jabra_PRO_930_036012F5C805-00.mono-fallback
+    echo "Move sound to jabara"
+    pactl move-sink-input $inId alsa_output.usb-GN_Netcom_A_S_Jabra_PRO_930_036012F5C805-00.mono-fallback
+else
+    echo "Move mic to blz $outId"
+    pactl move-source-output $outId bluez_source.$blzId.headset_head_unit
+    echo "Move sound to blz $outId"
+    pactl move-sink-input $inId bluez_sink.$blzId.headset_head_unit
+fi
