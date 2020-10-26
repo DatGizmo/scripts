@@ -5,7 +5,7 @@ url="http://127.0.0.1:4747/video?"
 output="/dev/video0"
 if [ "$2" == "s" ]
 then
-	#url="http://192.168.1.108:4747/video?"
+	url="http://192.168.0.3:4747/video?"
 	output="/dev/video1"
 fi
 if [ "$1" == "0" ]
