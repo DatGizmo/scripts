@@ -12,3 +12,5 @@ echo "Syncing Notes"
 nextcloudcmd $verbose -u $user -p $pw ~/NC/Notes/ https://oc.datgizmo.de/remote.php/webdav/Notes
 echo "Syncing ytcc db"
 nextcloudcmd $verbose -u $user -p $pw ~/.local/share/ytcc/ https://oc.datgizmo.de/remote.php/webdav/ytcc
+echo "Syncing norskkurs"
+nextcloudcmd $verbose -u $user -p $pw ~/norskkurs https://oc.datgizmo.de/remote.php/webdav/Norge/norskkurs
