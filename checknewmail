@@ -15,8 +15,13 @@ then
         fi
     done
 
-    notify-send "Mail:" "$totalcount new mail(s) in total\n$msg"
-    echo "$totalcount $cc"
+    if [[ $(printenv | grep SBC_PORT) ]]
+    then
+        sbc notify "Mail:" "$totalcount new mail(s) in total\n$msg"
+    else
+        notify-send "Mail:" "$totalcount new mail(s) in total\n$msg"
+        echo "$totalcount $cc"
+    fi
 else
     echo "0"
 fi
