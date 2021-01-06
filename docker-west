@@ -1,3 +1,4 @@
 #!/bin/bash
 path="$1"
-docker run -it --rm -u 391825461:391800513  -v $path:/work -v ~/:/home/sewe  ncs-int:2.0
+echo $path
+docker run -it --rm -u 391825461:391800513  -v $path:/work -v ~/:/home/sewe docker-dtr.nordicsemi.no/sw-production/ncs-ext:latest /bin/bash
