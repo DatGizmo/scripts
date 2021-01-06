@@ -28,3 +28,8 @@ echo "---- Downloading threema Plugins ----"
     wget https://shop.threema.ch/qrscannerplugin/qrscannerplugin-current.apk -O $FPATH/threema-qrscanner.apk
     wget https://shop.threema.ch/voicemessageplugin/voicemessageplugin-current.apk -O $FPATH/threema-voice.apk
 
+echo "---- Download Fulguris ----"
+FGVER=$(curl -s https://slions.net/resources/fulguris.10/ | grep -i \"version\" | cut -d "\"" -f 4)
+FGFILE="fuguris-v$FGVER.apk"
+wget https://slions.net/resources/fulguris.10/download -O $FPATH/$FGFILE
+
