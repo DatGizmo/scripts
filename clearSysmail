@@ -1,2 +1,2 @@
 #!/bin/bash
-neomutt -f $HOME/Mail/system/ -e 'push T~d>7d<enter>\;Üqa<enter>'
+find $HOME/Mail/system -mtime 4 -exec rm {} \;
