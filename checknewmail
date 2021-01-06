@@ -1,6 +1,6 @@
 #!/bin/bash
 
-taglist="Bitbucket HR IT Jira Jenkins inbox"
+taglist="Bitbucket HR IT Jira Jenkins inbox GH_Helpdesk"
 totalcount=$(notmuch count tag:unread)
 
 if [[ "0" < "$totalcount" ]]
