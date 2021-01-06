@@ -3,7 +3,7 @@
 titReg='^([?[:alnum:][:space:].-]*)'
 posReg='([[:digit:]]{1,3}:[[:digit:]]{1,2})/'
 
-ret=$(mpc)
+ret=$(mpc -h mpdhost)
 if [[ $ret =~ $titReg ]];
 then
     tit=${BASH_REMATCH[1]}
@@ -14,4 +14,4 @@ then
     time=${BASH_REMATCH[1]}
 fi
 
-echo $tit $time > ~/tmp/mpdpos
+echo $tit $time > ~/NC/Notes/mpdpos
