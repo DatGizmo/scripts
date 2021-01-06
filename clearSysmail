@@ -1,0 +1,2 @@
+#!/bin/bash
+neomutt -f $HOME/Mail/system/ -e 'push T~d>7d<enter>\;Üqa<enter>'
