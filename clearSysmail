@@ -1,2 +1,2 @@
 #!/bin/bash
-find $HOME/Mail/system -mtime 4 -exec rm {} \;
+find $HOME/Mail/system -mtime +4 -type f -exec rm -v {} \;
