@@ -3,7 +3,7 @@ process=$(ps -x | grep sbc_master | grep -v grep)
 portReg="-p[[:space:]]([[:digit:]]*)"
 plugin="notify"
 critOrLow=false
-while getopts "clm:" OPT
+while getopts "cl" OPT
 do
     case $OPT in
         c)
@@ -16,17 +16,15 @@ do
             [[ $critOrLow == true ]] && echo "Only use on of crit or low" && exit 1
             critOrLow=true
         ;;
-        m)
-            msg=$OPT
-        ;;
     esac
             
 done
+shift $(( OPTIND-1 ))
 
 if [[ $process =~ $portReg ]]
 then
     port=${BASH_REMATCH[1]}
-    SBC_PORT="$port" SBC_REMOTE_HOST="sewe-sdesk" SBC_REMOTE_PORT="22" SBC_REMOTE_USER="sewe-sdesk" SBC_USER="gizmo" sbc $plugin $msg
+    SBC_PORT="$port" SBC_REMOTE_HOST="sewe-sdesk" SBC_REMOTE_PORT="22" SBC_REMOTE_USER="sewe-sdesk" SBC_USER="gizmo" sbc $plugin $@
 else
     exit 2
 fi
