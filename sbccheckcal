@@ -1,0 +1,55 @@
+#!/bin/bash
+
+function caldiff()
+{
+    n=$(date +%s)
+    diff=$(( $1-n ))
+    d=$(date --date "1970-01-01 $diff sec" "+%M")
+    echo $d
+}
+
+events=$(khal list --notstarted now 15m --format "{start-time}|{title}" --day-format "")
+
+IFS='|'
+d=""
+first=""
+for f in $events;
+do
+    if [[ $first == "" ]]
+    then
+        d=$f
+        first="done"
+    else
+        s=$(date --date "$d" +%s)
+        time=$(caldiff $s)
+        if [[ "$time" > "02" ]]
+        then
+            ~/bin/sbc-notify "Event in: ${time}m" "$f"
+        else
+            ~/bin/sbc-notify "Event NOW" "$f" 
+        fi
+    fi
+done
+
+tasks=$(todo --porcelain list --due 1 | jq -rM '.[] | [.due, .summary] | @tsv')
+IFS=$'\n'
+
+for t in $tasks;
+do
+    IFS=$'\t'
+    first=""
+    time=""
+    due=""
+    for e in $t;
+    do
+        if [[ $first == "" ]]
+        then
+            due=$(date --date "1970-01-01 $e sec" "+%H:%M")
+            time=$(caldiff $e)
+            [[ "$time" > "15" ]] && break
+            first="done"
+        else
+           ~/bin/sbc-notify "Task in: ${time}m" "$due $e"
+        fi
+    done
+done
