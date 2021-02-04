@@ -1,4 +1,5 @@
 #!/bin/bash
+killall droidcam-cli
 adb shell am force-stop com.dev47apps.droidcamx
 adb shell dumpsys power | grep -q "Display Power: state=ON"
 res=$?
