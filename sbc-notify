@@ -1,8 +1,7 @@
 #!/bin/bash
-process=$(ps -x | grep sbc_master)
-portReg="-p[[:space:]]*([[:digit:]]*)"
-plugin=""
+. ~/bin/sbc-source
 critOrLow=false
+plugin=""
 while getopts "cl" OPT
 do
     case $OPT in
@@ -21,12 +20,4 @@ do
 done
 shift $(( OPTIND-1 ))
 
-IFS=$'\n'
-for f in $process
-do
-    if [[ $f =~ $portReg ]]
-    then
-        port=${BASH_REMATCH[1]}
-        SBC_PORT="$port" SBC_REMOTE_HOST="sewe-sdesk" SBC_REMOTE_PORT="22" SBC_REMOTE_USER="sewe-sdesk" SBC_USER="gizmo" sbc notify$plugin $@
-    fi
-done
+sbc notify$plugin $@
