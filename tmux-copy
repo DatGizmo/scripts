@@ -1,0 +1,8 @@
+#!/bin/bash
+if [[ -n $WAYLAND_DISPLAY ]]
+then
+    echo "wl-copy"
+else
+    echo "xsel -i --clipboard"
+fi
+
