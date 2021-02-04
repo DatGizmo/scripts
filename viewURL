@@ -1,4 +1,13 @@
 #!/bin/bash
-xclip -i <<< $1
+if [[ -n $WAYLAND_DISPLAY ]]
+then
+    wl-copy $1
+elif [[ -n $DISPLAY ]]
+then
+    xclip -i <<< $1
+else
+    . ~/bin/sbc-source
+    sbc copy $1
+fi
 [[ "0" == "$?" ]] && exit
 lynx $1
