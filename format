@@ -1,0 +1,4 @@
+#!/bin/bash
+out=$1
+shift
+xmllint --format $@ | sed -z 's/<\/testsuites>\n<?xml version="1.0"?>\n<testsuites>\n//g' > $out
