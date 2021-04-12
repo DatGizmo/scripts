@@ -1,3 +1,3 @@
 #!/bin/bash
 /etc/init.d/stunnel restart
-openconnect --protocol=gp -u sebastian.wezel@nordicsemi.no --passwd-on-stdin  vpn.nordicsemi.no --servercert pin-sha256:PsSesU2hFSBIm8XpQvzamNwpz/JiziJMudgrt9xfOs8= <<< "Gr3ml1nAtNordicS3m2"
+openconnect --protocol=gp -u sebastian.wezel@nordicsemi.no vpn.nordicsemi.no --servercert pin-sha256:PsSesU2hFSBIm8XpQvzamNwpz/JiziJMudgrt9xfOs8=
