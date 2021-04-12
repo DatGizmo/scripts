@@ -9,7 +9,6 @@ TestCase = namedtuple('TestCase', ['Class', 'Name', 'BoardName', 'Erromsg'])
 def parseXml(filename):
     testList = []
     misIncReg = re.compile("No such file or directory\n.*(#include\s+[\w\.<>_&]*)", re.MULTILINE)
-    misModReg = re.compile("ModuleNotFoundError: No module named '\w*'")
     oveflowReg = re.compile("FLASH' overflowed by \d* bytes\ncollect2: error: ld returned 1 exit status")
     hashReg = re.compile("RuntimeError: Hash of key in [\w/_\.']* contains 0x[a-fA-F0-9]*\. Please regenerate the key.")
     undefRefReg = re.compile("undefined reference to .*'")
@@ -18,6 +17,8 @@ def parseXml(filename):
     kconfReg = re.compile("error: Aborting due to Kconfig warnings")
     fileNotFound = re.compile("^\s*File not found:\n\s*[\w/._]*", re.MULTILINE)
     arrBoundReg = re.compile(".*\[-Werror=array-bounds\]")
+    linkerReg = re.compile("(FAILED: [\w\/\.]*)(\n.*)*?")
+    cmakeReg = re.compile("^(CMake Error at)[\s\.\/\w:'`]*\(message\):\n\s*[\w\s'`\n.*]*$", re.MULTILINE)
     root = xTree.parse(filename).getroot()
     for ts in root.findall('testsuite'):
         for tc in ts.findall('testcase'):
@@ -35,7 +36,6 @@ def parseXml(filename):
                 if(etext):
                     resString = ""
                     resInc = re.search(misIncReg, etext)
-                    resMod = re.search(misModReg, etext)
                     resOver = re.search(oveflowReg, etext)
                     resHash = re.search(hashReg, etext)
                     resUndef = re.search(undefRefReg, etext)
@@ -44,11 +44,10 @@ def parseXml(filename):
                     resKconf = re.search(kconfReg, etext)
                     resFiNo = re.search(fileNotFound, etext)
                     resArBound = re.search(arrBoundReg, etext)
+                    resLink = re.search(linkerReg, etext)
+                    resCmake = re.search(cmakeReg, etext)
                     if(resInc):
                         resString = resInc.group(0)
-#                    elif(resMod):
-#                        resString = resMod.group(0)
-#                        continue
                     elif(resOver):
                         resString = resOver.group(0)
                     elif(resHash):
@@ -65,6 +64,10 @@ def parseXml(filename):
                         resString = resFiNo.group(0)
                     elif(resArBound):
                         resString = resArBound.group(0)
+                    elif(resLink):
+                        resString = "Linker error: %s" % resLink.group(0)
+                    elif(resCmake):
+                        resString = resCmake.group(0)
 
                     if(not resString):
                         print("----------START---------")
