@@ -2,9 +2,9 @@
 xrandr --output DisplayPort-0 --off
 xrandr --output DisplayPort-1 --off
 xrandr --output DisplayPort-2 --off
-xrandr --output HDMI-A-0 --off
+#xrandr --output HDMI-A-0 --off
 sleep 1
-xrandr --output DisplayPort-1 --mode 1920x1080
-xrandr --output DisplayPort-0 --mode 2560x1440 --right-of DisplayPort-1
-xrandr --output DisplayPort-2 --mode 1920x1080 --right-of DisplayPort-0
-xrandr --output HDMI-A-0 --mode 1920x1080 --right-of DisplayPort-2
+xrandr --output DisplayPort-0 --mode 2560x1440
+xrandr --output DisplayPort-1 --mode 1920x1080 --right-of DisplayPort-0
+xrandr --output DisplayPort-2 --mode 1920x1080 --right-of DisplayPort-1
+#xrandr --output HDMI-A-0 --mode 1920x1080 --right-of DisplayPort-2
