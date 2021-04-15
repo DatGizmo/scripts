@@ -1,6 +1,7 @@
 #!/bin/bash
 process=$(ps -x | grep sbc_master)
 portReg="-p[[:space:]]*([[:digit:]]*)"
+nameReg="[[:space:]]([[:alpha:]]*)@"
 plugin=""
 
 IFS=$'\n'
@@ -13,6 +14,11 @@ do
         export SBC_REMOTE_HOST="sewe-sdesk"
         export SBC_REMOTE_PORT="22"
         export SBC_REMOTE_USER="sewe-sdesk"
-        export SBC_USER="gizmo"
+        if [[ $f =~ $nameReg ]]
+        then
+            export SBC_USER="${BASH_REMATCH[1]}"
+        else
+            export SBC_USER="sewe"
+        fi
     fi
 done
