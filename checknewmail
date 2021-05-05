@@ -1,5 +1,6 @@
 #!/bin/bash
 
+/usr/bin/notmuch new >> /dev/null
 taglist="Bitbucket HR IT Jira Jenkins inbox GH_Helpdesk"
 totalcount=$(notmuch count tag:unread)
 
