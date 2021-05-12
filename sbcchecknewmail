@@ -1,7 +1,7 @@
 #!/bin/bash
 
 /usr/bin/notmuch new
-taglist="Bitbucket HR IT Jira Jenkins inbox GH_Helpdesk"
+taglist="Bitbucket HR IT Jira Jenkins inbox GH_Helpdesk Confluence"
 totalcount=$(notmuch count tag:unread)
 
 if [[ "0" < "$totalcount" ]]
