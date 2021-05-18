@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Tea time: $1"
 sleep $1
 notify-send "Tea" "Tea is done"
 
