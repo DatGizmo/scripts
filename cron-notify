@@ -1,0 +1,7 @@
+#!/bin/bash
+username=$(/usr/bin/whoami)
+pid=$(pgrep -u $username dbus-daemon -o)
+path="/proc/$pid/environ"
+dbus=$(grep -z DBUS_SESSION_BUS_ADDRESS $path | tr '\0' '\n ' | sed 's/DBUS_SESSION_BUS_ADDRESS=//')
+export DBUS_SESSION_BUS_ADDRESS=$dbus
+/usr/bin/notify-send $@ 
